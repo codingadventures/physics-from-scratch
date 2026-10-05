@@ -33,4 +33,4 @@ Agents (Claude Code) start from [AGENTS.md](AGENTS.md).
 
 ## Licence
 
-Code: MIT. Written content: CC BY 4.0. The licence files are pending (see open question OQ-01 in the plan).
+Code: MIT ([LICENSE](LICENSE)). Written content: CC BY 4.0 ([LICENSE-CONTENT](LICENSE-CONTENT)). Copyright (c) 2026 Gio Campo.

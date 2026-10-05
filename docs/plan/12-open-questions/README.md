@@ -14,8 +14,8 @@ Owner of every answer is the author unless stated. A default applies if the auth
 
 | ID | Question | Default | Blocks |
 |---|---|---|---|
-| OQ-01 | Copyright holder name (and year) for the licence files | none: ask | WP-01 licence files |
-| OQ-02 | Repository name, blog name and domain (suggested repository name: `physics-from-scratch`) | suggestion above | WP-04 titles |
+| OQ-01 | Copyright holder name (and year) for the licence files | **Answered:** Gio Campo, 2026 (D-023) | nothing |
+| OQ-02 | Repository name, blog name and domain (suggested repository name: `physics-from-scratch`) | **Repository answered:** public `codingadventures/physics-from-scratch` (D-024). Blog name and domain still open. | WP-04 titles |
 | OQ-03 | Blog target: how many journal posts, what cadence | none set | nothing |
 | OQ-04 | Spelling variant for prose | British English | nothing (a later pass can normalise) |
 | OQ-05 | Test validation without reference solutions. Default: known-answer tests with derivations, a fresh-context review that re-derives expected values, and the author as the oracle. Option: agents validate tests against a throwaway reference in a temporary folder outside the repository, deleted afterwards (spoiler risk if it sits on the author's machine). | default | nothing |

@@ -36,3 +36,5 @@ Append-only. A decision that changes a frozen contract needs a row here and the 
 | D-020 | 2026-10-01 | Two content kinds: Course (drafted by agents) and Journal (written by the author) | Author | decided |
 | D-021 | 2026-10-01 | Module 5 pill order: restitution (5.3) before rotation (5.4), so Exercise 5a matches its pills | Claude | proposed |
 | D-022 | 2026-10-01 | A module README is its entry spec; agents expand it into files under `course/` | Claude | proposed (awaiting the author's confirmation) |
+| D-023 | 2026-10-05 | Copyright holder for the licence files: Gio Campo, 2026 (answers OQ-01) | Author | decided |
+| D-024 | 2026-10-05 | Repository: public `codingadventures/physics-from-scratch` on GitHub (answers the repository part of OQ-02) | Author | decided |
