@@ -14,7 +14,7 @@ physics-course/
   journal/            the author's own posts (written by the author)
 ```
 
-Only `docs/plan/` and the root files exist today. Everything else is created by work packages in `13-agent-plan`.
+`docs/plan/`, the root files, `starter/` (toolchain only), `.devcontainer/` and `.github/` exist today. Everything else is created by work packages in `13-agent-plan`.
 
 ## Sections
 
@@ -23,7 +23,7 @@ Only `docs/plan/` and the root files exist today. Everything else is created by 
 | 00 | [Goal](00-goal/README.md) | drafted | none | Author review |
 | 01 | [Format](01-format/README.md) | drafted | 00 | Author review |
 | 02 | [Contract](02-contract/README.md) | drafted | 00, 01 | Author approval to freeze (OQ-06) |
-| 03 | [Repo spec](03-repo-spec/README.md) | drafted | 02 | WP-01, WP-02 |
+| 03 | [Repo spec](03-repo-spec/README.md) | drafted | 02 | WP-01 toolchain done; WP-02 (needs OQ-06) |
 | 04 | [Visual layer](04-visual-layer/README.md) | drafted | 02, 03 | WP-03 |
 | 05 | [Solutions policy](05-solutions-policy/README.md) | drafted | 01 | Author review |
 | 06 | [References](06-references/README.md) | partly verified | none | WP-05a, WP-05b |
