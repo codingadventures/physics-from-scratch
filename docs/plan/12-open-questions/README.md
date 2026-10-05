@@ -1,0 +1,30 @@
+---
+section: "12-open-questions"
+status: drafted
+depends_on: []
+owner: unassigned
+outputs: ["docs/plan/12-open-questions/README.md"]
+definition_of_done: "Every question is answered, or has an accepted default, and the answer is recorded in 11-decisions."
+---
+
+
+# 12 Open questions
+
+Owner of every answer is the author unless stated. A default applies if the author does not answer.
+
+| ID | Question | Default | Blocks |
+|---|---|---|---|
+| OQ-01 | Copyright holder name (and year) for the licence files | none: ask | WP-01 licence files |
+| OQ-02 | Repository name, blog name and domain (suggested repository name: `physics-from-scratch`) | suggestion above | WP-04 titles |
+| OQ-03 | Blog target: how many journal posts, what cadence | none set | nothing |
+| OQ-04 | Spelling variant for prose | British English | nothing (a later pass can normalise) |
+| OQ-05 | Test validation without reference solutions. Default: known-answer tests with derivations, a fresh-context review that re-derives expected values, and the author as the oracle. Option: agents validate tests against a throwaway reference in a temporary folder outside the repository, deleted afterwards (spoiler risk if it sits on the author's machine). | default | nothing |
+| OQ-06 | Approve and freeze `02-contract` | none: needs approval | WP-02 |
+| OQ-07 | Which PDFs, with title and edition, and how they will be provided | none | pill drafting |
+| OQ-08 | Astro vs something simpler for the site | Astro, if WP-04 verifies the deployment steps | WP-04 |
+| OQ-09 | Pills as plain `.md` in `course/` with visual markers, ingested by the site | as stated; WP-04 confirms feasibility | WP-04 |
+| OQ-10 | Final Tracer API | WP-03 proposes, the author approves | WP-03 |
+| OQ-11 | Visuals need algorithm implementations to run, and there are no reference solutions | small standalone implementations under `starter/src/visuals/algos/`, separate from the learner's stubs | visual work |
+| OQ-12 | Where the author's published solutions live (branch, folder or separate repository) | undecided | nothing yet |
+| OQ-13 | Exercise 4a covers five pills, over the 3-4 guideline. Split as 4a = 4.1-4.4 and 4b = 4.5-4.8? | leave as is; revisit when drafting Module 4 | M4 drafting |
+| OQ-14 | Is Module 0 (about 1.5 h of TypeScript for C++ developers) enough, or is a longer primer needed? | enough | nothing |
