@@ -1,0 +1,38 @@
+// Visual algorithm for V0 (pill 0.5): adding two vectors, tip to tail.
+// Deliberately standalone: it does not use the Exercise 0 functions.
+import type { Vec2 } from "../../math/vec2";
+import { trace } from "../../trace/trace";
+
+const O = { x: 0, y: 0 };
+
+export function tracedVectorAdd(a: Vec2, b: Vec2): Vec2 {
+  const sum = { x: a.x + b.x, y: a.y + b.y };
+  trace.begin("a + b");
+  trace.step(
+    "Start with a, from the origin",
+    [{ kind: "arrow", from: O, to: a, label: "a", color: "a" }],
+    {
+      "a.x": a.x,
+      "a.y": a.y,
+    },
+  );
+  trace.step(
+    "Place b at the tip of a",
+    [
+      { kind: "arrow", from: O, to: a, label: "a", color: "a" },
+      { kind: "arrow", from: a, to: sum, label: "b", color: "b" },
+    ],
+    { "b.x": b.x, "b.y": b.y },
+  );
+  trace.step(
+    "a + b goes from the origin to the tip of b",
+    [
+      { kind: "arrow", from: O, to: a, label: "a", color: "muted" },
+      { kind: "arrow", from: a, to: sum, label: "b", color: "muted" },
+      { kind: "arrow", from: O, to: sum, label: "a + b", color: "highlight" },
+    ],
+    { "sum.x": sum.x, "sum.y": sum.y },
+  );
+  trace.end();
+  return sum;
+}

@@ -1,0 +1,35 @@
+// Given: demo 0, the player tutorial (pill 0.5, optional visual V0).
+// Step through a vector addition, then drag the tips of a and b.
+import { recordTrace } from "../trace/trace";
+import { createPlayer } from "../visuals/player";
+import { makeDraggable } from "../visuals/drag";
+import { tracedVectorAdd } from "../visuals/algos/vectorAdd";
+import type { Demo } from "./types";
+
+export const demo0: Demo = {
+  title: "Demo 0: how to read the visuals",
+  description:
+    "Step with the arrows or the slider, press play, or drag the tips of a (blue) and b (orange).",
+  mount(container) {
+    let a = { x: 2, y: 1 };
+    let b = { x: 1, y: 2 };
+    const record = () => recordTrace(() => tracedVectorAdd(a, b));
+    const player = createPlayer(container, record(), {
+      center: { x: 1.5, y: 1.5 },
+      pixelsPerMetre: 60,
+    });
+    const handles = [
+      { get: () => a, set: (p: typeof a) => (a = p) },
+      {
+        get: () => ({ x: a.x + b.x, y: a.y + b.y }),
+        set: (p: typeof a) => (b = { x: p.x - a.x, y: p.y - a.y }),
+      },
+    ];
+    const undrag = makeDraggable(player.view, handles, () => player.setRecording(record()));
+    player.goTo(2);
+    return () => {
+      undrag();
+      player.destroy();
+    };
+  },
+};

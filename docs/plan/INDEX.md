@@ -24,7 +24,7 @@ physics-course/
 | 01 | [Format](01-format/README.md) | drafted | 00 | Author review |
 | 02 | [Contract](02-contract/README.md) | frozen | 00, 01 | Author confirms the WP-02 signature table (D-028) |
 | 03 | [Repo spec](03-repo-spec/README.md) | drafted | 02 | WP-01 and WP-02 done; R1 review, then `npm run progress` and WP-03 |
-| 04 | [Visual layer](04-visual-layer/README.md) | drafted | 02, 03 | WP-03 |
+| 04 | [Visual layer](04-visual-layer/README.md) | drafted | 02, 03 | WP-03 framework done; must-have visuals come with module content |
 | 05 | [Solutions policy](05-solutions-policy/README.md) | drafted | 01 | Author review |
 | 06 | [References](06-references/README.md) | partly verified | none | WP-05a, WP-05b |
 | 07 | [Blog and site](07-blog/README.md) | drafted | 00, 04 | WP-04 |

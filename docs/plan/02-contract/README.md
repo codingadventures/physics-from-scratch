@@ -180,16 +180,20 @@ Every narrowphase function has the shape `(a: Body, b: Body) => Manifold | null`
 | **box** | circleVsBox (swapped) | boxVsBox | boxVsPlane |
 | **plane** | circleVsPlane (swapped) | boxVsPlane (swapped) | none |
 
-## Tracer API (proposal, finalised by WP-03)
+## Tracer API (final from WP-03, awaiting the author's approval: OQ-10)
+
+Lives in `starter/src/trace/trace.ts` (given). Not part of the frozen contract until the author approves it.
 
 ```ts
+export type PrimColor = "a" | "b" | "normal" | "contact" | "muted" | "highlight" | (string & {});
+
 export type DrawPrim =
-  | { kind: "point"; p: Vec2; label?: string }
-  | { kind: "segment"; a: Vec2; b: Vec2; label?: string }
-  | { kind: "arrow"; from: Vec2; to: Vec2; label?: string }
-  | { kind: "circle"; c: Vec2; r: number }
-  | { kind: "polygon"; pts: Vec2[] }
-  | { kind: "text"; p: Vec2; text: string };
+  | { kind: "point"; p: Vec2; label?: string; color?: PrimColor }
+  | { kind: "segment"; a: Vec2; b: Vec2; label?: string; color?: PrimColor }
+  | { kind: "arrow"; from: Vec2; to: Vec2; label?: string; color?: PrimColor }
+  | { kind: "circle"; c: Vec2; r: number; color?: PrimColor }
+  | { kind: "polygon"; pts: Vec2[]; color?: PrimColor }
+  | { kind: "text"; p: Vec2; text: string; color?: PrimColor };
 
 export interface Trace {
   readonly enabled: boolean;
@@ -197,7 +201,15 @@ export interface Trace {
   step(label: string, prims: DrawPrim[], values?: Record<string, number>): void;
   end(): void;
 }
+
+export type Frame = { group: string[]; label: string; prims: DrawPrim[]; values: Record<string, number> };
+export type Recording = { frames: Frame[] };
+
+export const trace: Trace;                              // ambient, no-op unless recording
+export function recordTrace(fn: () => void): Recording; // records while fn runs
 ```
+
+Changes from the proposal: an optional `color` on every primitive (a palette name or any CSS colour); `Frame` and `Recording` types; `recordTrace` as the only way to turn recording on. Primitives are deep-copied when recorded, so later mutation of bodies cannot change a frame. Recording stops if the traced code throws.
 
 ## Change policy
 
