@@ -30,7 +30,7 @@ Modules 0-4 complete.
 | 5.5 | Friction | tangent impulse, the Coulomb clamp |jt| <= mu*jn |
 | 5.6 | Iterating over contacts | the sequential impulse loop and the iteration count |
 | 5.7 | Fixing penetration | positional correction and slop |
-| 5.8 | What this solver gets wrong | jitter, sinking, no stacking, tunnelling; pointers to the advanced track |
+| 5.8 | What this solver gets wrong | jitter, sinking, no stacking, tunnelling; why a resting body sinks g*dt^2 every step under our step order, and how Box2D Lite avoids it (D-033); pointers to the advanced track |
 
 ## Exercises
 
