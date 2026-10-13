@@ -158,7 +158,7 @@ Types in learner files are marked "Given: do not change this type".
 
 ### Test helpers (`starter/test-helpers/`, given)
 
-`expectClose(actual, expected, tol = 1e-6)` and `expectVecClose` (treat -0 and 0 as equal; NaN never passes); `seededRng(seed)` with `next`, `range`, `vec2`; `makeBody`, `circle`, `box`, `plane`, `makeStatic` (build `Body` records directly, so tests after Exercise 1 do not depend on the learner's `createBody`); `DT = 1/60`, `runSteps`, `runForSeconds`; `kineticEnergy`, `linearMomentum`, `allFinite`.
+`expectClose(actual, expected, tol = 1e-6)` and `expectVecClose` (treat -0 and 0 as equal; NaN never passes); `seededRng(seed)` with `next`, `range`, `vec2`; `makeBody`, `circle`, `box`, `plane`, `makeStatic` (build `Body` records directly, so tests that take `Body` records do not depend on the learner's `createBody`; `World.addBody` still does); `DT = 1/60`, `runSteps`, `runForSeconds`; `kineticEnergy`, `linearMomentum`, `allFinite`.
 
 ## Narrowphase signatures
 

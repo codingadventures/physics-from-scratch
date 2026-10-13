@@ -32,7 +32,8 @@ export function runForSeconds(
 
 /**
  * 0.5*m*|v|^2 + 0.5*I*w^2, with m = 1/invMass and I = 1/invInertia.
- * Static bodies (invMass 0) count as 0; a zero invInertia contributes no rotational term.
+ * A static body (invMass 0, and so invInertia 0 by the contract) counts as 0.
+ * A dynamic body with invInertia 0 contributes no rotational term.
  */
 export function kineticEnergy(body: Body): number {
   if (body.invMass === 0) return 0;

@@ -51,6 +51,17 @@ describe("runForSeconds", () => {
   });
 });
 
+describe("scene builders", () => {
+  it("copy vectors, so bodies never share them", () => {
+    const p = { x: 1, y: 2 };
+    const a = circle(0, p, 1);
+    const b = circle(1, p, 1);
+    a.position.x = 5;
+    expect(b.position.x).toBe(1);
+    expect(p.x).toBe(1);
+  });
+});
+
 describe("physical quantities", () => {
   it("kinetic energy: m = 2, v = (3,4), I = 4, w = 2 gives 33", () => {
     // Linear: 0.5 * 2 * (9 + 16) = 25. Angular: 0.5 * 4 * 2^2 = 8. Total 33.

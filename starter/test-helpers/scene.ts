@@ -9,10 +9,14 @@ import type { Body } from "../src/dynamics/body";
 
 export type BodyOverrides = Partial<Omit<Body, "id" | "shape">>;
 
+/** Overrides for the shorthands, which take position as an argument. */
+export type ShapeOverrides = Omit<BodyOverrides, "position">;
+
+/** Vectors are copied, so two bodies never share a position or velocity object. */
 export function makeBody(id: number, shape: Shape, overrides: BodyOverrides = {}): Body {
-  return {
+  const body: Body = {
     id,
-    shape,
+    shape: structuredClone(shape),
     position: { x: 0, y: 0 },
     angle: 0,
     linearVelocity: { x: 0, y: 0 },
@@ -23,9 +27,12 @@ export function makeBody(id: number, shape: Shape, overrides: BodyOverrides = {}
     friction: 0.5,
     ...overrides,
   };
+  body.position = { ...body.position };
+  body.linearVelocity = { ...body.linearVelocity };
+  return body;
 }
 
-export function circle(id: number, position: Vec2, radius: number, o: BodyOverrides = {}): Body {
+export function circle(id: number, position: Vec2, radius: number, o: ShapeOverrides = {}): Body {
   return makeBody(id, { kind: "circle", radius }, { position, ...o });
 }
 
@@ -34,13 +41,13 @@ export function box(
   position: Vec2,
   halfWidth: number,
   halfHeight: number,
-  o: BodyOverrides = {},
+  o: ShapeOverrides = {},
 ): Body {
   return makeBody(id, { kind: "box", halfWidth, halfHeight }, { position, ...o });
 }
 
 /** Always static. normal must be a unit vector. */
-export function plane(id: number, normal: Vec2, offset: number, o: BodyOverrides = {}): Body {
+export function plane(id: number, normal: Vec2, offset: number, o: ShapeOverrides = {}): Body {
   return makeBody(
     id,
     { kind: "plane", normal, offset },
