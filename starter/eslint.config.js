@@ -11,11 +11,9 @@ export default tseslint.config(
       globals: { ...globals.browser, ...globals.node },
     },
     rules: {
-      // Stubs keep their parameters before the learner uses them.
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
-      ],
+      // Stubs keep their named parameters before the learner uses them,
+      // so unused arguments are allowed. Unused variables are still errors.
+      "@typescript-eslint/no-unused-vars": ["error", { args: "none", varsIgnorePattern: "^_" }],
     },
   },
 );
