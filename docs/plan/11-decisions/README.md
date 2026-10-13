@@ -31,7 +31,7 @@ Append-only. A decision that changes a frozen contract needs a row here and the 
 | D-015 | 2026-10-01 | No reference solutions in the repository; the author asks Claude when stuck; the author's solutions are published later | Author | decided |
 | D-016 | 2026-10-01 | Licences: MIT for code, CC BY 4.0 for written content | Author | decided |
 | D-017 | 2026-10-01 | One public monorepo; the plan is a tree of section files; work by Claude Code agents with subagent type and effort recommended per task | Author | decided |
-| D-018 | 2026-10-01 | Semi-implicit Euler as the integrator | Claude | proposed |
+| D-018 | 2026-10-01 | Semi-implicit Euler as the integrator. Pill 1.4 says why it is used for now; advanced A8 compares other integrators (approved 2026-10-13) | Author (accepted Claude's proposal) | decided |
 | D-019 | 2026-10-01 | "Gathering" means gathering the rigid bodies every frame | Author | decided |
 | D-020 | 2026-10-01 | Two content kinds: Course (drafted by agents) and Journal (written by the author) | Author | decided |
 | D-021 | 2026-10-01 | Module 5 pill order: restitution (5.3) before rotation (5.4), so Exercise 5a matches its pills | Claude | proposed |
