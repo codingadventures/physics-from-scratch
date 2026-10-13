@@ -1,6 +1,6 @@
 ---
 section: "02-contract"
-status: drafted
+status: frozen
 depends_on: ["00-goal", "01-format"]
 owner: unassigned
 outputs: ["docs/plan/02-contract/README.md", "starter/src/ (types and stubs, built by WP-02)"]
@@ -10,7 +10,7 @@ definition_of_done: "The author approves it and sets status to frozen. After tha
 
 # 02 Contract
 
-**Status: drafted, not yet frozen.** Once frozen, every lesson, stub and test depends on this. The Tracer API at the bottom is a proposal that WP-03 finalises.
+**Status: frozen on 2026-10-13 by the author (D-027).** Every lesson, stub and test depends on this. Changes follow the change policy at the bottom. The Tracer API at the bottom is not frozen: it is a proposal that WP-03 finalises (OQ-10).
 
 ## Conventions
 
@@ -94,7 +94,71 @@ normalize(a): Vec2      // zero vector returns the zero vector
 
 ## Exercise signatures
 
-The signatures for Exercises 1-5c are proposed in each module spec (`08-modules`). WP-02 finalises them and records the final table here, and the author approves it as part of freezing this contract.
+Final signatures, as written in `starter/src/` by WP-02 (D-028). Every function body starts as `throw new Error("TODO: Exercise N, name")`.
+
+| Ex | File | Signature |
+|---|---|---|
+| 0 | `math/vec2.ts` | the Vec2 functions above |
+| 1 | `dynamics/shapes.ts` | `circleInertia(mass: number, radius: number): number` |
+| 1 | `dynamics/shapes.ts` | `boxInertia(mass: number, halfWidth: number, halfHeight: number): number` |
+| 1 | `dynamics/body.ts` | `createBody(def: BodyDef, id: number): Body` |
+| 1 | `dynamics/integrate.ts` | `integrate(body: Body, dt: number, gravity: Vec2): void` |
+| 2 | `world/aabb.ts` | `computeAABB(body: Body): AABB` |
+| 2 | `world/world.ts` | `class World` (below) |
+| 3 | `broadphase/bruteForce.ts` | `class BruteForceBroadphase implements Broadphase` |
+| 3 | `broadphase/sortAndSweep.ts` | `class SortAndSweepBroadphase implements Broadphase` |
+| 4a | `narrowphase/circleCircle.ts`, `circlePlane.ts`, `boxPlane.ts`, `circleBox.ts` | `circleVsCircle`, `circleVsPlane`, `boxVsPlane`, `circleVsBox`: `(a: Body, b: Body) => Manifold \| null` |
+| 4b | `narrowphase/boxBox.ts` | `boxVsBox(a: Body, b: Body): Manifold \| null` |
+| 4b | `narrowphase/dispatch.ts` | `collide(a: Body, b: Body): Manifold \| null` |
+| 5a | `solver/impulse.ts` | `relativeNormalVelocity(a: Body, b: Body, normal: Vec2): number` |
+| 5a | `solver/impulse.ts` | `solveNormalImpulseLinear(m: Manifold): void` |
+| 5b | `solver/impulse.ts` | `applyImpulse(body: Body, impulse: Vec2, r: Vec2): void` |
+| 5b | `solver/impulse.ts` | `solveContact(m: Manifold, point: ContactPoint): void` |
+| 5c | `solver/impulse.ts` | `solveContacts(manifolds: Manifold[], iterations: number): void` |
+| 5c | `solver/impulse.ts` | `positionalCorrection(m: Manifold, percent: number, slop: number): void` |
+
+### World
+
+```ts
+export type NarrowphaseStage = (a: Body, b: Body) => Manifold | null; // collide fits
+export type SolverStage = (manifolds: Manifold[], dt: number) => void;
+export type GatheredBody = { body: Body; aabb: AABB };
+export type WorldOptions = {
+  gravity?: Vec2;              // default (0, -9.81)
+  broadphase?: Broadphase;     // default: no pairs
+  narrowphase?: NarrowphaseStage; // default: always null
+  solver?: SolverStage;        // default: no-op
+};
+
+export class World {
+  gravity: Vec2; broadphase: Broadphase; narrowphase: NarrowphaseStage; solver: SolverStage;
+  constructor(options?: WorldOptions);          // given
+  get bodies(): readonly Body[];                // Exercise 2
+  addBody(def: BodyDef): Body;                  // ids 0, 1, 2, ..., never reused
+  removeBody(body: Body): void;
+  gather(): GatheredBody[];
+  step(dt: number): void; // integrate, gather, broadphase, narrowphase, solver
+}
+```
+
+The stages are public fields, so Exercise 5c plugs in the solver by assigning `world.solver` (no change to `world.ts`).
+
+### Where the given types live
+
+| Type | File |
+|---|---|
+| `Vec2` | `math/vec2.ts` |
+| `Shape` | `dynamics/shapes.ts` |
+| `Body`, `BodyDef` | `dynamics/body.ts` |
+| `AABB` | `world/aabb.ts` |
+| `ContactPoint`, `Manifold` | `narrowphase/manifold.ts` (given file) |
+| `Broadphase` | `broadphase/broadphase.ts` (given file) |
+
+Types in learner files are marked "Given: do not change this type".
+
+### Test helpers (`starter/test-helpers/`, given)
+
+`expectClose(actual, expected, tol = 1e-6)` and `expectVecClose` (treat -0 and 0 as equal; NaN never passes); `seededRng(seed)` with `next`, `range`, `vec2`; `makeBody`, `circle`, `box`, `plane`, `makeStatic` (build `Body` records directly, so tests after Exercise 1 do not depend on the learner's `createBody`); `DT = 1/60`, `runSteps`, `runForSeconds`; `kineticEnergy`, `linearMomentum`, `allFinite`.
 
 ## Narrowphase signatures
 

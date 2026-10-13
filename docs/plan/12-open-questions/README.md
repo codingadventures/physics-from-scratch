@@ -19,7 +19,7 @@ Owner of every answer is the author unless stated. A default applies if the auth
 | OQ-03 | Blog target: how many journal posts, what cadence | none set | nothing |
 | OQ-04 | Spelling variant for prose | British English | nothing (a later pass can normalise) |
 | OQ-05 | Test validation without reference solutions. Default: known-answer tests with derivations, a fresh-context review that re-derives expected values, and the author as the oracle. Option: agents validate tests against a throwaway reference in a temporary folder outside the repository, deleted afterwards (spoiler risk if it sits on the author's machine). | default | nothing |
-| OQ-06 | Approve and freeze `02-contract` | none: needs approval | WP-02 |
+| OQ-06 | Approve and freeze `02-contract` | **Answered:** frozen 2026-10-13 (D-027) | nothing |
 | OQ-07 | Which PDFs, with title and edition, and how they will be provided | none | pill drafting |
 | OQ-08 | Astro vs something simpler for the site | Astro, if WP-04 verifies the deployment steps | WP-04 |
 | OQ-09 | Pills as plain `.md` in `course/` with visual markers, ingested by the site | as stated; WP-04 confirms feasibility | WP-04 |
