@@ -26,7 +26,7 @@ physics-course/
 | 03 | [Repo spec](03-repo-spec/README.md) | drafted | 02 | WP-01 and WP-02 done; R1 review, then `npm run progress` and WP-03 |
 | 04 | [Visual layer](04-visual-layer/README.md) | drafted | 02, 03 | WP-03 |
 | 05 | [Solutions policy](05-solutions-policy/README.md) | drafted | 01 | Author review |
-| 06 | [References](06-references/README.md) | partly verified | none | WP-05a, WP-05b |
+| 06 | [References](06-references/README.md) | drafted (WP-05a done) | none | WP-05b; read the "exists" rows before citing |
 | 07 | [Blog and site](07-blog/README.md) | drafted | 00, 04 | WP-04 |
 | 08 | [Modules](08-modules/README.md) | outlines drafted | 01, 02, 03, 04 | Phase 2 work packages |
 | 09 | [Advanced track](09-advanced/README.md) | outline drafted | 08 complete | After the author finishes the standard track |
