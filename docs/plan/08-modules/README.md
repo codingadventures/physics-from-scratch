@@ -29,7 +29,7 @@ Function signatures in the specs are **proposals**. WP-02 finalises them, writes
 
 | Module | Spec | Pills | Exercises | Estimate |
 |---|---|---|---|---|
-| M0 Setup and TypeScript | [m0-setup](m0-setup/README.md) | 0.1-0.5 (5) | 0 | ~1.5h |
+| M0 Setup and just enough TypeScript | [m0-setup](m0-setup/README.md) | 0.1-0.5 (5) | 0 | ~1.5h |
 | M1 Rigid body representation | [m1-rigid-body](m1-rigid-body/README.md) | 1.1-1.6 (6) | 1 | ~3h |
 | M2 Gathering and the world | [m2-gathering](m2-gathering/README.md) | 2.1-2.4 (4) | 2 | ~2h |
 | M3 Broadphase | [m3-broadphase](m3-broadphase/README.md) | 3.1-3.4 (4) | 3 | ~2h |
@@ -38,6 +38,8 @@ Function signatures in the specs are **proposals**. WP-02 finalises them, writes
 | M6 Capstone | [m6-capstone](m6-capstone/README.md) | 6.1-6.3 (3) | capstone checks | ~2h |
 
 ## Cross-module rules
+
+- TypeScript is taught as you go (D-029): each module spec lists the features its exercise introduces, and lessons, hints and tests use nothing that has not been introduced yet. Comparisons are with C++.
 
 - Pill ids are stable. Lessons refer to each other by id.
 - An exercise's tests may depend only on given code and earlier exercises.

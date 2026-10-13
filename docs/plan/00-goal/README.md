@@ -31,7 +31,7 @@ A public, hands-on course that teaches how a 2D rigid body physics engine works 
 
 ## Audience
 
-- **Target learner:** an experienced programmer comfortable with vectors, matrices and basic calculus, new to physics engines and to TypeScript. Prior game-development experience helps but is not required.
+- **Target learner:** an experienced programmer comfortable with vectors, matrices and basic calculus, new to physics engines and to TypeScript, with C++ as the reference language. TypeScript is taught as you go, inside the exercises, not as a separate tutorial (D-029). Prior game-development experience helps but is not required.
 - **First learner:** the author, who builds the course material while doing it and writes the journal posts from that experience.
 - **Prerequisites are stated, not taught:** vectors, dot and cross products, matrices, basic trigonometry, 2D rotation, the idea that velocity is the derivative of position.
 
