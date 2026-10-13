@@ -14,7 +14,7 @@ Lessons cite only sources marked **verified** here.
 
 ## Verification status
 
-Checked by WP-05a on 2026-10-13. Lessons may cite only rows marked **verified**.
+Checked by WP-05a on 2026-10-13, with follow-up fixes the same day. qu3e (Randy Gaul) was removed: it is a 3D engine. Lessons may cite only rows marked **verified**.
 
 - **verified:** the page or file was fetched and its title and author matched.
 - **exists:** seen on a fetched page or fetched as a file, but the content was not read. Read it before citing.
@@ -29,23 +29,21 @@ Checked by WP-05a on 2026-10-13. Lessons may cite only rows marked **verified**.
 | Allen Chou, Game Physics Series | verified (index only) | "Game Physics Series", Ming-Lun "Allen" Chou, posts Dec 2013 to Feb 2014 | https://allenchou.net/game-physics-series/ | Motion dynamics, broadphase (dynamic AABB tree), GJK, EPA, sequential-impulse and contact constraints, slop, warm starting. Open each post before citing it. |
 | Chris Hecker, Rigid Body Dynamics | verified (index; PDFs not opened) | Four Game Developer magazine articles, 1996-97: "The Next Frontier", "Angular Effects", "Collision Response", "The Third Dimension" (3D) | https://www.chrishecker.com/Rigid_Body_Dynamics | 2D linear and angular dynamics, integration, collision response. The author notes some equations are garbled in the PDFs. |
 | Erin Catto, Box2D Lite | verified | erincatto/box2d-lite, written for the GDC 2006 physics tutorial, MIT licence | https://github.com/erincatto/box2d-lite | Teaching engine: sequential impulses, contacts, friction, stacking. WP-05b dissection target. |
-| Erin Catto, "Fast and Simple Physics" (Box2D Lite companion) | exists (PDF fetched, 53 pages, text not read) | GDC 2006 tutorial slides, `docs/GDC2006_Catto_Erin_PhysicsTutorial.pdf` in box2d-lite | https://media.githubusercontent.com/media/erincatto/box2d-lite/master/docs/GDC2006_Catto_Erin_PhysicsTutorial.pdf | The talk behind Box2D Lite. The github.com blob URL returns a Git LFS pointer, not the PDF. |
+| Erin Catto, "Fast and Simple Physics using Sequential Impulses" | verified (PDF text read, 53 slides) | GDC 2006, Crystal Dynamics. The same deck is in box2d-lite as `docs/GDC2006_Catto_Erin_PhysicsTutorial.pdf` | https://box2d.org/files/ErinCatto_SequentialImpulses_GDC2006.pdf ; https://media.githubusercontent.com/media/erincatto/box2d-lite/master/docs/GDC2006_Catto_Erin_PhysicsTutorial.pdf | The talk behind Box2D Lite: why impulses, relative velocity, accumulated impulses, friction. M5. (The github.com blob URL returns a Git LFS pointer, not the PDF.) |
 | Erin Catto, publications | verified (list) | box2d.org publications page: GDC talks 2006-2019 (Sequential Impulses, Contact Manifolds, Constraints and Numerical Integration, Soft Constraints, Continuous Collision, Understanding Constraints, Numerical Methods, Dynamic BVH) | https://box2d.org/publications/ | Index to the talks. |
 | Erin Catto, "Understanding Constraints" | verified (PDF text read) | GDC 2014 | https://box2d.org/files/ErinCatto_UnderstandingConstraints_GDC2014.pdf | Constraints and solver design. |
-| Erin Catto, "Sequential Impulses" | exists (PDF fetched, text not read) | GDC 2006 | https://box2d.org/files/ErinCatto_SequentialImpulses_GDC2006.pdf | Sequential impulse solver. |
-| Erin Catto, "Contact Manifolds" | exists, metadata conflict | File name says GDC 2007; the PDF's embedded metadata says 2005 and a different author | https://box2d.org/files/ErinCatto_ContactManifolds_GDC2007.pdf | Contact manifolds. Confirm year and author before citing. |
+| Erin Catto, "Contact Manifolds" | verified (PDF text read, 32 slides; year from the author's publications page) | GDC 2007, Blizzard Entertainment. Cite it as GDC 2007: the PDF's embedded metadata (2005, another name) is a leftover template field and is wrong | https://box2d.org/files/ErinCatto_ContactManifolds_GDC2007.pdf | Contact points, manifolds via SAT in one shot or via GJK point by point. M4. |
 | Erin Catto, "Solver2D" | verified | box2d.org post, 5 Feb 2024 | https://box2d.org/posts/2024/02/solver2d/ | Test bed comparing eight Gauss-Seidel style solvers, including XPBD. Advanced track (A2, D-007). |
 | Erin Catto, Box2D v3 posts | verified (titles and dates) | "Starting Box2D 3.0", 15 Jan 2023; "Releasing Box2D 3.0", 9 Aug 2024 | https://box2d.org/posts/2023/01/starting-box2d-3.0/ ; https://box2d.org/posts/2024/08/releasing-box2d-3.0/ | Project history. Little technical content. |
 | Box2D documentation | verified | "Box2D: Overview" | https://box2d.org/documentation/ | API and concepts of Box2D v3. |
 | Glenn Fiedler, "Fix Your Timestep!" | verified | Gaffer On Games, 10 Jun 2004 | https://gafferongames.com/post/fix_your_timestep/ | Fixed and semi-fixed timesteps, the accumulator. Pill 1.5. |
 | Glenn Fiedler, "Integration Basics" | verified | Gaffer On Games, 1 Jun 2004 | https://gafferongames.com/post/integration_basics/ | Explicit and semi-implicit Euler, RK4. Pill 1.4. |
 | Matthias Muller, Ten Minute Physics | verified (index; videos not watched) | "Ten Minute Physics" | https://matthias-research.github.io/pages/tenMinutePhysics/ | PBD and XPBD episodes, including rigid bodies and 2D ball collisions. Advanced track. Videos, not text. |
-| Dirk Gregorius, "Robust Contact Creation for Physics Simulation" | exists (PDF fetched, 124 pages, text not read) | GDC 2015, Physics for Game Programmers | https://media.steampowered.com/apps/valve/2015/DirkGregorius_Contacts.pdf ; https://gdcvault.com/play/1022193/Physics-for-Game-Programmers-Robust | Stable contact manifolds (from the title). |
-| Dirk Gregorius, "The Separating Axis Test between Convex Polyhedra" | exists (GDC Vault listing only) | GDC 2013, Physics for Game Programmers | https://www.gdcvault.com/play/1017643/Physics-for-Game | SAT in 3D. Slides not opened. |
-| Richard Tonge, "Solving Rigid Body Contacts" (GDC 2012) | not found | No talk under that title. Closest match: "Iterative Rigid Body Solvers", Richard Tonge, GDC 2013 Physics for Game Programmers day (unconfirmed as the same talk) | https://www.gdcvault.com/play/1017643/Physics-for-Game | Do not cite until confirmed. |
+| Dirk Gregorius, "Robust Contact Creation for Physics Simulation" | verified (PDF text read, 124 slides with speaker notes) | GDC 2015, Physics for Game Programmers | https://media.steampowered.com/apps/valve/2015/DirkGregorius_Contacts.pdf ; https://gdcvault.com/play/1022193/Physics-for-Game-Programmers-Robust | Contact points and manifolds, SAT, reference and incident faces, clipping, capsules. Deeper reading for M4 (pills 4.6-4.7). |
+| Dirk Gregorius, "The Separating Axis Test between Convex Polyhedra" | exists (GDC Vault session listing only; no free slides found) | GDC 2013, Physics for Game Programmers | https://www.gdcvault.com/play/1017643/Physics-for-Game | SAT in 3D. Slides not opened. |
+| Richard Tonge, "Solving Rigid Body Contacts" | verified (PDF text read, 59 slides with speaker notes) | GDC 2012, Physics for Game Programmers. Hosted on the author's site (the devlog links it); GDC Vault does not list it under this title | http://www.richardtonge.com/presentations/Tonge-2012-GDC-solvingRigidBodyContacts.pdf | The common iterative rigid body contact solver, explained for beginners. M5. The site is plain http. |
 | Physac | verified | victorfisac/Physac, Victor Fisac. Header-only C, needs raylib | https://github.com/victorfisac/Physac | Small engine: collision info, dynamics, solving, position correction, fixed step. (raysan5/physac is a fork; cite the original.) |
 | Randy Gaul, ImpulseEngine | verified (repo page; README returned 404) | RandyGaul/ImpulseEngine, 2D impulse engine for education | https://github.com/RandyGaul/ImpulseEngine | Companion code to the Tuts+ series. |
-| Randy Gaul, qu3e | verified | RandyGaul/qu3e v1.01 | https://github.com/RandyGaul/qu3e | **3D** box-only engine. Advanced or backlog reading only, not a 2D source. |
 | Pikuma, Game Physics Engine Programming | verified (course page) | Paid course, 2D rigid body engine in C++ | https://pikuma.com/courses/game-physics-engine-development | Context only. Never a source to copy from. |
 | TypeScript Handbook | verified | "The TypeScript Handbook", Microsoft | https://www.typescriptlang.org/docs/handbook/intro.html | Reference for the "TypeScript you need here" boxes (D-029). |
 
@@ -58,10 +56,9 @@ Checked by WP-05a on 2026-10-13. Lessons may cite only rows marked **verified**.
 
 ### Still to do before citing
 
-1. Read the contents of every **exists** row that a lesson wants to cite: the Catto 2006 slides, the Gregorius 2015 slides (the PDFs did not yield text automatically), and the Gregorius 2013 SAT talk.
-2. Resolve the Catto "Contact Manifolds" year and author, and the Tonge talk.
-3. Open individual Allen Chou posts, Tuts+ parts 2-4 and Hecker PDFs before citing a specific one.
-4. Confirm editions against the author's own copies when the PDF list arrives (OQ-07).
+1. The Gregorius 2013 SAT talk: find the slides or drop it (the 2015 contacts talk covers SAT for this course's needs).
+2. Open individual Allen Chou posts, Tuts+ parts 2-4 and Hecker PDFs before citing a specific one.
+3. Confirm editions against the author's own copies when the PDF list arrives (OQ-07).
 
 ## The author's PDFs
 
