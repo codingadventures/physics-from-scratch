@@ -19,13 +19,14 @@ The same commands work on macOS, Windows and Linux.
 
 ## Commands
 
-| Command              | Purpose                                                |
-| -------------------- | ------------------------------------------------------ |
-| `npm run doctor`     | check your setup                                       |
-| `npm test`           | run all tests                                          |
-| `npm test -- ex4a`   | run one exercise's tests                               |
-| `npm run test:watch` | re-run tests as you edit                               |
-| `npm run typecheck`  | type-check without running                             |
-| `npm run check`      | typecheck, lint, format check and tests (what CI runs) |
+| Command              | Purpose                                                               |
+| -------------------- | --------------------------------------------------------------------- |
+| `npm run doctor`     | check your setup                                                      |
+| `npm test`           | run all tests                                                         |
+| `npm test -- ex4a`   | run one exercise's tests                                              |
+| `npm run test:watch` | re-run tests as you edit                                              |
+| `npm run typecheck`  | type-check without running                                            |
+| `npm run demo:0`     | open a demo in the browser (0 to 6; demo 0 teaches the visual player) |
+| `npm run check`      | typecheck, lint, format check and tests (what CI runs)                |
 
-The exercise stubs and test helpers are in place. Exercise tests, `npm run progress` and the demos arrive in later work packages.
+The exercise stubs and test helpers are in place. Exercise tests, `npm run progress` and demos 1 to 6 arrive in later work packages.

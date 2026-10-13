@@ -23,7 +23,7 @@ Owner of every answer is the author unless stated. A default applies if the auth
 | OQ-07 | Which PDFs, with title and edition, and how they will be provided | none | pill drafting |
 | OQ-08 | Astro vs something simpler for the site | Astro, if WP-04 verifies the deployment steps | WP-04 |
 | OQ-09 | Pills as plain `.md` in `course/` with visual markers, ingested by the site | as stated; WP-04 confirms feasibility | WP-04 |
-| OQ-10 | Final Tracer API | WP-03 proposes, the author approves | WP-03 |
+| OQ-10 | Final Tracer API | WP-03 has written it into `02-contract` (D-031); the author approves by merging the WP-03 PR | visual work |
 | OQ-11 | Visuals need algorithm implementations to run, and there are no reference solutions | small standalone implementations under `starter/src/visuals/algos/`, separate from the learner's stubs | visual work |
 | OQ-12 | Where the author's published solutions live (branch, folder or separate repository) | undecided | nothing yet |
 | OQ-13 | Exercise 4a covers five pills, over the 3-4 guideline. Split as 4a = 4.1-4.4 and 4b = 4.5-4.8? | leave as is; revisit when drafting Module 4 | M4 drafting |
