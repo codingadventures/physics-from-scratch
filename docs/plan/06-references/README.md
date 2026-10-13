@@ -14,7 +14,7 @@ Lessons cite only sources marked **verified** here.
 
 ## Verification status
 
-Checked by WP-05a on 2026-10-13, with follow-up fixes the same day. qu3e (Randy Gaul) was removed: it is a 3D engine. Lessons may cite only rows marked **verified**.
+Checked by WP-05a on 2026-10-13, with follow-up fixes the same day. qu3e (Randy Gaul) was removed: it is a 3D engine. Dirk Gregorius's GDC 2013 talk "The Separating Axis Test" was removed: it appears only in the schedule of the Physics for Game Programmers day on GDC Vault, every recording of that day is filed under Richard Tonge, and no slides were found. His 2015 contacts talk covers SAT and clipping for this course. Lessons may cite only rows marked **verified**.
 
 - **verified:** the page or file was fetched and its title and author matched.
 - **exists:** seen on a fetched page or fetched as a file, but the content was not read. Read it before citing.
@@ -40,7 +40,6 @@ Checked by WP-05a on 2026-10-13, with follow-up fixes the same day. qu3e (Randy 
 | Glenn Fiedler, "Integration Basics" | verified | Gaffer On Games, 1 Jun 2004 | https://gafferongames.com/post/integration_basics/ | Explicit and semi-implicit Euler, RK4. Pill 1.4. |
 | Matthias Muller, Ten Minute Physics | verified (index; videos not watched) | "Ten Minute Physics" | https://matthias-research.github.io/pages/tenMinutePhysics/ | PBD and XPBD episodes, including rigid bodies and 2D ball collisions. Advanced track. Videos, not text. |
 | Dirk Gregorius, "Robust Contact Creation for Physics Simulation" | verified (PDF text read, 124 slides with speaker notes) | GDC 2015, Physics for Game Programmers | https://media.steampowered.com/apps/valve/2015/DirkGregorius_Contacts.pdf ; https://gdcvault.com/play/1022193/Physics-for-Game-Programmers-Robust | Contact points and manifolds, SAT, reference and incident faces, clipping, capsules. Deeper reading for M4 (pills 4.6-4.7). |
-| Dirk Gregorius, "The Separating Axis Test between Convex Polyhedra" | exists (GDC Vault session listing only; no free slides found) | GDC 2013, Physics for Game Programmers | https://www.gdcvault.com/play/1017643/Physics-for-Game | SAT in 3D. Slides not opened. |
 | Richard Tonge, "Solving Rigid Body Contacts" | verified (PDF text read, 59 slides with speaker notes) | GDC 2012, Physics for Game Programmers. Hosted on the author's site (the devlog links it); GDC Vault does not list it under this title | http://www.richardtonge.com/presentations/Tonge-2012-GDC-solvingRigidBodyContacts.pdf | The common iterative rigid body contact solver, explained for beginners. M5. The site is plain http. |
 | Physac | verified | victorfisac/Physac, Victor Fisac. Header-only C, needs raylib | https://github.com/victorfisac/Physac | Small engine: collision info, dynamics, solving, position correction, fixed step. (raysan5/physac is a fork; cite the original.) |
 | Randy Gaul, ImpulseEngine | verified (repo page; README returned 404) | RandyGaul/ImpulseEngine, 2D impulse engine for education | https://github.com/RandyGaul/ImpulseEngine | Companion code to the Tuts+ series. |
@@ -56,9 +55,8 @@ Checked by WP-05a on 2026-10-13, with follow-up fixes the same day. qu3e (Randy 
 
 ### Still to do before citing
 
-1. The Gregorius 2013 SAT talk: find the slides or drop it (the 2015 contacts talk covers SAT for this course's needs).
-2. Open individual Allen Chou posts, Tuts+ parts 2-4 and Hecker PDFs before citing a specific one.
-3. Confirm editions against the author's own copies when the PDF list arrives (OQ-07).
+1. Open individual Allen Chou posts, Tuts+ parts 2-4 and Hecker PDFs before citing a specific one.
+2. Confirm editions against the author's own copies when the PDF list arrives (OQ-07).
 
 ## The author's PDFs
 
