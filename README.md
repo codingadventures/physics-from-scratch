@@ -15,7 +15,11 @@ A small engine that simulates 2..N rigid bodies, detects collisions between circ
 
 ## Status
 
-**Planning phase.** Nothing is built yet. The plan lives in [docs/plan/INDEX.md](docs/plan/INDEX.md).
+**Foundations phase.** The starter toolchain is set up; exercise stubs, tests, lessons and the site are not written yet. The plan lives in [docs/plan/INDEX.md](docs/plan/INDEX.md).
+
+## Getting started
+
+Use this repository as a template (**Use this template** on GitHub) so you have your own copy for your solutions. Then either open your copy in **GitHub Codespaces** (nothing to install) or clone it and run `npm install` in `starter/`. Details: [starter/README.md](starter/README.md).
 
 ## Repository layout
 
@@ -23,7 +27,7 @@ A small engine that simulates 2..N rigid bodies, detects collisions between circ
 |---|---|
 | `docs/plan/` | The plan, one folder per section (start at INDEX.md) |
 | `course/` | Lesson content: pills and exercise pages (not yet written) |
-| `starter/` | The TypeScript starter project: given code, stubs, tests, demos (not yet created) |
+| `starter/` | The TypeScript starter project: given code, stubs, tests, demos (toolchain only so far) |
 | `site/` | The website (not yet created) |
 | `journal/` | The author's own posts about doing the course (written by the author) |
 
