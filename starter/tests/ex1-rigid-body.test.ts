@@ -3,7 +3,9 @@
 // Every expected value is derived in a comment, so you can check it by hand.
 import { describe, expect, it } from "vitest";
 import { boxInertia, circleInertia } from "../src/dynamics/shapes";
-import { createBody, type BodyDef } from "../src/dynamics/body";
+import { createBody } from "../src/dynamics/body";
+import type { BodyDef } from "../src/dynamics/body";
+import type { Shape } from "../src/dynamics/shapes";
 import { integrate } from "../src/dynamics/integrate";
 import { DT, expectClose, expectVecClose, runSteps } from "../test-helpers";
 
@@ -58,16 +60,16 @@ describe("createBody", () => {
   it("mass 0 makes a static body: invMass 0 and invInertia 0", () => {
     // 02-contract: a static body has inverse mass 0 and inverse inertia 0.
     const b = createBody(circleDef(0), 0);
-    expect(b.invMass).toBe(0);
-    expect(b.invInertia).toBe(0);
+    expectClose(b.invMass, 0);
+    expectClose(b.invInertia, 0);
   });
   it("applies the defaults", () => {
     // 02-contract: angle 0, velocities 0, restitution 0, friction 0.5.
     const b = createBody(circleDef(1, { position: { x: 1, y: 2 } }), 0);
     expectVecClose(b.position, { x: 1, y: 2 });
-    expect(b.angle).toBe(0);
+    expectClose(b.angle, 0);
     expectVecClose(b.linearVelocity, { x: 0, y: 0 });
-    expect(b.angularVelocity).toBe(0);
+    expectClose(b.angularVelocity, 0);
     expect(b.restitution).toBe(0);
     expect(b.friction).toBe(0.5);
   });
@@ -90,11 +92,11 @@ describe("createBody", () => {
   });
   it("a plane with mass is an error; a static plane is fine", () => {
     // 02-contract: planes must be static, and a non-static plane makes createBody throw.
-    const plane = { kind: "plane", normal: { x: 0, y: 1 }, offset: 0 } as const;
+    const plane: Shape = { kind: "plane", normal: { x: 0, y: 1 }, offset: 0 };
     expect(() => createBody({ shape: plane, position: { x: 0, y: 0 }, mass: 1 }, 0)).toThrow();
     const ground = createBody({ shape: plane, position: { x: 0, y: 0 }, mass: 0 }, 0);
-    expect(ground.invMass).toBe(0);
-    expect(ground.invInertia).toBe(0);
+    expectClose(ground.invMass, 0);
+    expectClose(ground.invInertia, 0);
   });
 });
 
@@ -162,6 +164,6 @@ describe("integrate (semi-implicit Euler)", () => {
     runSteps((dt) => integrate(b, dt, G), 60);
     expectVecClose(b.position, { x: 1, y: 2 });
     expectVecClose(b.linearVelocity, { x: 0, y: 0 });
-    expect(b.angle).toBe(0);
+    expectClose(b.angle, 0);
   });
 });

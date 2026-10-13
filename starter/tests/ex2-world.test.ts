@@ -69,7 +69,7 @@ describe("computeAABB", () => {
         [hw, -hh],
         [hw, hh],
         [-hw, hh],
-      ].map(([x, y]) => ({ x: centre.x + c * x! - s * y!, y: centre.y + s * x! + c * y! }));
+      ].map(([x, y]) => ({ x: centre.x + c * x - s * y, y: centre.y + s * x + c * y }));
 
       const aabb = computeAABB(box(0, centre, hw, hh, { angle }));
       const eps = 1e-9;
@@ -121,8 +121,8 @@ describe("World bodies", () => {
     const gathered = world.gather();
     expect(gathered).toHaveLength(1);
     // Circle r = 0.5 at (1,2): same numbers as the computeAABB test above.
-    expectVecClose(gathered[0]!.aabb.min, { x: 0.5, y: 1.5 });
-    expectVecClose(gathered[0]!.aabb.max, { x: 1.5, y: 2.5 });
+    expectVecClose(gathered[0].aabb.min, { x: 0.5, y: 1.5 });
+    expectVecClose(gathered[0].aabb.max, { x: 1.5, y: 2.5 });
   });
 });
 
@@ -157,8 +157,8 @@ describe("World.step", () => {
     world.addBody(circleDef(0, 0));
     world.step(1 / 60);
     const [g] = world.gather();
-    expectClose(g!.aabb.min.y, -0.5 - 0.002725, 1e-12);
-    expectClose(g!.aabb.max.y, 0.5 - 0.002725, 1e-12);
+    expectClose(g.aabb.min.y, -0.5 - 0.002725, 1e-12);
+    expectClose(g.aabb.max.y, 0.5 - 0.002725, 1e-12);
   });
 
   it("runs the stages in order: integrate, broadphase, narrowphase, solver", () => {
@@ -172,8 +172,8 @@ describe("World.step", () => {
       broadphase: {
         findPairs(bodies: readonly Body[]) {
           calls.push("broadphase");
-          yWhenBroadphaseRan = bodies[0]!.position.y;
-          return [[bodies[0]!, bodies[1]!]];
+          yWhenBroadphaseRan = bodies[0].position.y;
+          return [[bodies[0], bodies[1]]];
         },
       },
       narrowphase(a, b) {
@@ -200,13 +200,30 @@ describe("World.step", () => {
     expect(dtSeen).toBe(1 / 60);
   });
 
+  it("uses a stage assigned after construction", () => {
+    // The stages are public fields (02-contract). Exercise 5c plugs in the solver
+    // this way, so step must read the field when it runs, not a copy taken earlier.
+    let solverCalls = 0;
+    const world = new World({
+      broadphase: { findPairs: (bodies: readonly Body[]) => [[bodies[0], bodies[1]]] },
+      narrowphase: (a, b) => ({ a, b, normal: { x: 1, y: 0 }, points: [] }),
+    });
+    world.addBody(circleDef(0, 0));
+    world.addBody(circleDef(0.5, 0));
+    world.solver = () => {
+      solverCalls++;
+    };
+    world.step(1 / 60);
+    expect(solverCalls).toBe(1);
+  });
+
   it("calls the narrowphase once per pair from the broadphase", () => {
     let narrowCalls = 0;
     const world = new World({
       broadphase: {
         findPairs: (bodies: readonly Body[]) => [
-          [bodies[0]!, bodies[1]!],
-          [bodies[0]!, bodies[2]!],
+          [bodies[0], bodies[1]],
+          [bodies[0], bodies[2]],
         ],
       },
       narrowphase: () => {

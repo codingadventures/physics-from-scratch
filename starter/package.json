@@ -27,7 +27,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test:given && node scripts/progress.mjs --expect-stubs"
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm test",
+    "check:course": "npm run typecheck && npm run lint && npm run format:check && npm run test:given && node scripts/progress.mjs --expect-stubs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

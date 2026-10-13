@@ -59,6 +59,35 @@ Checked by WP-05a on 2026-10-13, with follow-up fixes the same day. qu3e (Randy 
 1. Open individual Allen Chou posts, Tuts+ parts 2-4 and Hecker PDFs before citing a specific one.
 2. Confirm editions against the author's own copies when the PDF list arrives (OQ-07).
 
+### Reading ids
+
+Pill frontmatter (`readings_essential`, `readings_deeper`) uses these ids. Add a row here before citing a new source.
+
+| Id | Source |
+|---|---|
+| `typescript-handbook` | TypeScript Handbook |
+| `gaul-tutsplus-part-1` | Randy Gaul, Tuts+ part 1 |
+| `gaul-tutsplus-series` | Randy Gaul, Tuts+ series index |
+| `allen-chou-game-physics-series` | Allen Chou, Game Physics Series |
+| `hecker-rigid-body-dynamics` | Chris Hecker, Rigid Body Dynamics |
+| `box2d-lite` | Box2D Lite repository |
+| `box2d-lite-dissection` | `dissections/box2d-lite.md` (only after the matching exercise, D-032) |
+| `box2d-documentation` | Box2D documentation overview |
+| `catto-sequential-impulses-gdc2006` | Catto, "Fast and Simple Physics using Sequential Impulses" |
+| `catto-contact-manifolds-gdc2007` | Catto, "Contact Manifolds" |
+| `catto-understanding-constraints-gdc2014` | Catto, "Understanding Constraints" |
+| `catto-solver2d` | Catto, "Solver2D" |
+| `fiedler-fix-your-timestep` | Fiedler, "Fix Your Timestep!" |
+| `fiedler-integration-basics` | Fiedler, "Integration Basics" |
+| `muller-ten-minute-physics` | Muller, Ten Minute Physics |
+| `gregorius-sat-gdc2013` | Gregorius, "The Separating Axis Test between Convex Polyhedra" |
+| `gregorius-contacts-gdc2015` | Gregorius, "Robust Contact Creation for Physics Simulation" |
+| `tonge-solving-contacts-gdc2012` | Tonge, "Solving Rigid Body Contacts" |
+| `physac` | Physac |
+| `impulse-engine` | Randy Gaul, ImpulseEngine |
+| `millington-game-physics-engine-development` | Millington, *Game Physics Engine Development*, 2nd ed. |
+| `ericson-real-time-collision-detection` | Ericson, *Real-Time Collision Detection* |
+
 ## The author's PDFs
 
 The author owns PDFs of many physics books and will provide them. Titles and editions: to be listed here (OQ-07).
