@@ -3,7 +3,7 @@ section: "08-modules/m0-setup"
 status: drafted
 depends_on: ["01-format", "02-contract", "03-repo-spec", "04-visual-layer"]
 owner: unassigned
-outputs: ["course/m0/pill-0.1-course-overview-and-the-final-demo.md", "course/m0/pill-0.2-typescript-for-c-developers.md", "course/m0/pill-0.3-project-tour.md", "course/m0/pill-0.4-vector-maths-utilities-and-the-debug-draw-api.md", "course/m0/pill-0.5-how-to-read-the-interactive-visuals.md", "course/m0/exercise-0.md", "starter/tests/ex0-vec2.test.ts"]
+outputs: ["course/m0/pill-0.1-course-overview-and-the-final-demo.md", "course/m0/pill-0.2-just-enough-typescript.md", "course/m0/pill-0.3-project-tour.md", "course/m0/pill-0.4-vector-maths-utilities-and-the-debug-draw-api.md", "course/m0/pill-0.5-how-to-read-the-interactive-visuals.md", "course/m0/exercise-0.md", "starter/tests/ex0-vec2.test.ts"]
 definition_of_done: "Every pill file exists, is 5-7 minutes, follows the 01-format template and has checkpoint questions and verified readings. Every exercise page has hints 1-3 and its test file, which compiles against the WP-02 stubs. Every formula and known-answer number carries its derivation. The fresh-context review found no unresolved issues."
 ---
 
@@ -79,7 +79,7 @@ Candidates only. Cite a source in a pill only if it is marked verified in `06-re
 **Outputs** (create these; write nowhere else):
 
 - `course/m0/pill-0.1-course-overview-and-the-final-demo.md`
-- `course/m0/pill-0.2-typescript-for-c-developers.md`
+- `course/m0/pill-0.2-just-enough-typescript.md`
 - `course/m0/pill-0.3-project-tour.md`
 - `course/m0/pill-0.4-vector-maths-utilities-and-the-debug-draw-api.md`
 - `course/m0/pill-0.5-how-to-read-the-interactive-visuals.md`

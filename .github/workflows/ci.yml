@@ -23,5 +23,8 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run format:check
-      - run: npm test
+      # Exercise tests fail by design until a learner solves them. CI runs the
+      # given code's tests, then checks that every exercise test fails only on a TODO stub.
+      - run: npm run test:given
+      - run: node scripts/progress.mjs --expect-stubs
       - run: npm run build

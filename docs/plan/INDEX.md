@@ -39,9 +39,9 @@ Modules:
 
 | Module | Spec | Status |
 |---|---|---|
-| M0 Setup and just enough TypeScript | [m0](08-modules/m0-setup/README.md) | outline drafted |
-| M1 Rigid body representation | [m1](08-modules/m1-rigid-body/README.md) | outline drafted |
-| M2 Gathering and the world | [m2](08-modules/m2-gathering/README.md) | outline drafted |
+| M0 Setup and just enough TypeScript | [m0](08-modules/m0-setup/README.md) | content drafted and reviewed; author review pending |
+| M1 Rigid body representation | [m1](08-modules/m1-rigid-body/README.md) | content drafted and reviewed, V1 built; author review pending |
+| M2 Gathering and the world | [m2](08-modules/m2-gathering/README.md) | content drafted and reviewed; author review pending |
 | M3 Broadphase | [m3](08-modules/m3-broadphase/README.md) | outline drafted |
 | M4 Narrowphase | [m4](08-modules/m4-narrowphase/README.md) | outline drafted |
 | M5 Collision response | [m5](08-modules/m5-response/README.md) | outline drafted |

@@ -43,6 +43,7 @@ Consequences:
 
 | ID | Module | Visual | Priority |
 |---|---|---|---|
+| V0 | 0 | Vector addition, doubling as the player tutorial (`v0-vector-add`, demo 0) | optional, built |
 | V1 | 1 | Explicit vs semi-implicit Euler energy drift on a spring or orbit | must-have |
 | V2 | 1 | Inertia of a box vs a circle | optional |
 | V3 | 2 | AABB of a rotating box growing and shrinking | optional |
