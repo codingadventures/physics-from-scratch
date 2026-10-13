@@ -19,6 +19,7 @@ definition_of_done: "Templates are agreed by the author and used unchanged by ev
 | Exercise | After every 3-4 pills. Implement stubs until the tests pass |
 | Demo | Each module ends with a browser demo using debug draw |
 | Interactive visual | Maths-heavy pills embed one (see 04-visual-layer) |
+| TypeScript box | Each exercise page teaches the TypeScript features that exercise needs for the first time, compared with C++ (D-029). No separate TypeScript tutorial. |
 | Reading list | 1-3 sources per pill, split into essential and deeper. Only verified sources (see 06-references). |
 
 Time estimates are guesses. They assume some prior physics and game-development experience: someone new to TypeScript and physics should plan on 1.5-2x.
@@ -83,6 +84,11 @@ tests: ["starter/tests/ex1-rigid-body.test.ts"]
 
 ## How to check
 (Commands, and what a pass looks like.)
+
+## TypeScript you need here
+(Only the TypeScript features this exercise uses for the first time, each with
+a C++ comparison and a tiny example unrelated to the solution. Taken from the
+module spec. Never use a feature before the box that introduces it.)
 
 ## Hints
 1. Where to look

@@ -63,6 +63,10 @@ Module 0 complete (Vec2). Basic calculus intuition.
 
 **Hints to write** (1-3, no code): which update happens first in semi-implicit Euler and why; why static bodies use inverse mass 0; how the box inertia formula follows from the rectangle formula
 
+### TypeScript you need here (Exercise 1)
+
+Taught in a short box on the exercise page, only when first needed (D-029): union types and the `kind` field (the `Shape` type), optional fields (`angle?`) and defaults with `??`, throwing errors, mutating an object in place. C++ comparison: a discriminated union is like `std::variant` with a tag; objects are passed by reference, never copied.
+
 ## Visuals
 
 - **V1 (must-have):** explicit vs semi-implicit Euler energy drift on a spring or orbit. Run the real integration step on the same system with both schemes and plot energy over time.

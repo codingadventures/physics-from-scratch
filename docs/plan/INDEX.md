@@ -39,7 +39,7 @@ Modules:
 
 | Module | Spec | Status |
 |---|---|---|
-| M0 Setup and TypeScript | [m0](08-modules/m0-setup/README.md) | outline drafted |
+| M0 Setup and just enough TypeScript | [m0](08-modules/m0-setup/README.md) | outline drafted |
 | M1 Rigid body representation | [m1](08-modules/m1-rigid-body/README.md) | outline drafted |
 | M2 Gathering and the world | [m2](08-modules/m2-gathering/README.md) | outline drafted |
 | M3 Broadphase | [m3](08-modules/m3-broadphase/README.md) | outline drafted |

@@ -13,18 +13,18 @@ Spec drafted; pills, exercise pages and tests are not written yet. Function sign
 
 ## Purpose
 
-Get the learner and the project running: enough TypeScript to read and write the exercises, the tooling, the vector utilities, and how the interactive visuals work.
+Get the learner and the project running: just enough TypeScript to read a test and write one function, the tooling, the vector utilities, and how the interactive visuals work. The rest of TypeScript is taught as the exercises need it (D-029).
 
 ## Prerequisites
 
-Programming experience (C++ or similar). No physics.
+Programming experience in C++ (the TypeScript boxes compare against C++). No TypeScript. No physics.
 
 ## Pills (planned)
 
 | ID | Title | Key idea |
 |---|---|---|
 | 0.1 | Course overview and the final demo | what we build; how pills, exercises and visuals work |
-| 0.2 | TypeScript for C++ developers | types, interfaces, classes, modules; no pointers or manual memory; structural typing |
+| 0.2 | Just enough TypeScript | values and types, functions, objects, import and export, reading a test; no pointers or manual memory; everything else arrives with the exercise that needs it |
 | 0.3 | Project tour | Vite, Vitest, the renderer, running one test |
 | 0.4 | Vector maths utilities and the debug draw API | Vec2 as plain objects, free functions, drawing helpers |
 | 0.5 | How to read the interactive visuals | step, scrub, drag; what a trace is |
@@ -58,6 +58,10 @@ Programming experience (C++ or similar). No physics.
 - Compare numbers with `expectClose`, not `toEqual`: `toEqual` distinguishes -0 from 0 (for example crossSV(2, {1,0}) can produce -0 in x), which would fail correct solutions.
 
 **Hints to write** (1-3, no code): which formula each function is; why perp is a 90 degree counter-clockwise rotation; how to guard the zero-length case
+
+### TypeScript you need here (Exercise 0)
+
+Taught in a short box on the exercise page, only when first needed (D-029): types (`number`, object types, `type` aliases), functions, `export`/`import`, `const` vs `let`, reading a Vitest test (`describe`, `it`, `expect`). C++ comparison: free functions in a namespace; a `type` alias is like a struct declaration but checked structurally.
 
 ## Visuals
 

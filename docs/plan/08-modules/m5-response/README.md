@@ -114,6 +114,10 @@ Modules 0-4 complete.
 
 **Hints to write** (1-3, no code): why one pass is not enough when contacts share bodies; what slop prevents; why positional correction is separate from the velocity solve
 
+### TypeScript you need here (Exercises 5a-5c)
+
+Taught in a short box on the exercise page, only when first needed (D-029): functions as values and closures (the World's solver stage), `for` and `for...of` loops, numeric precision with `Math.max`/`Math.min`/`Math.sqrt`. C++ comparison: a closure is like a lambda that captures by reference.
+
 ## Visuals
 
 - **V10 (must-have):** relative velocity split into normal and tangent components at a contact.

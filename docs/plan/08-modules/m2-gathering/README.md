@@ -62,6 +62,10 @@ Modules 0-1 complete.
 
 **Hints to write** (1-3, no code): why the box extent formula uses absolute values; where gather sits relative to integration; why ids must not be reused
 
+### TypeScript you need here (Exercise 2)
+
+Taught in a short box on the exercise page, only when first needed (D-029): classes, `private` fields, getters, `readonly` arrays, `Infinity`, arrays of objects. C++ comparison: no header/source split, no destructors; `readonly Body[]` is like a `const std::vector<Body*>&`.
+
 ## Visuals
 
 V3 (optional): the AABB of a rotating box growing and shrinking as it spins.

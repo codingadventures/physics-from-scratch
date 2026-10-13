@@ -92,6 +92,10 @@ Modules 0-3 complete.
 
 **Hints to write** (1-3, no code): what projecting a box onto an axis means; how to pick the incident face; what to keep after clipping
 
+### TypeScript you need here (Exercises 4a and 4b)
+
+Taught in a short box on the exercise page, only when first needed (D-029): `switch` on `shape.kind` and how it narrows the type, returning `null` and strict null checks, small local helper functions, object spread to copy a manifold. C++ comparison: narrowing replaces `std::get_if`; `null` must be handled explicitly or the compiler refuses.
+
 ## Visuals
 
 - **V7 (must-have):** SAT projection intervals on each axis, showing overlap or gap, stepping axis by axis.

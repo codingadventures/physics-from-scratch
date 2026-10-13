@@ -59,6 +59,10 @@ Modules 0-2 complete.
 
 **Hints to write** (1-3, no code): why one axis is enough to discard most pairs; what the active list holds; how the plane's infinite extent behaves in the sweep
 
+### TypeScript you need here (Exercise 3)
+
+Taught in a short box on the exercise page, only when first needed (D-029): interfaces and `implements`, tuples (`[Body, Body]`), `Array.prototype.sort` with a comparator, `push` and `filter`. C++ comparison: an interface is like a pure abstract class, but checked structurally; the comparator returns a number, not a bool.
+
 ## Visuals
 
 - **V4 (must-have):** sort and sweep: the sweep position moving along the axis, the active list, and pairs appearing.
