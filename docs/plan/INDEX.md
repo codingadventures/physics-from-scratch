@@ -14,7 +14,7 @@ physics-course/
   journal/            the author's own posts (written by the author)
 ```
 
-`docs/plan/`, the root files, `starter/` (toolchain only), `.devcontainer/` and `.github/` exist today. Everything else is created by work packages in `13-agent-plan`.
+`docs/plan/`, the root files, `starter/` (toolchain, given types, exercise stubs, test helpers), `.devcontainer/` and `.github/` exist today. Everything else is created by work packages in `13-agent-plan`.
 
 ## Sections
 
@@ -22,8 +22,8 @@ physics-course/
 |---|---|---|---|---|
 | 00 | [Goal](00-goal/README.md) | drafted | none | Author review |
 | 01 | [Format](01-format/README.md) | drafted | 00 | Author review |
-| 02 | [Contract](02-contract/README.md) | drafted | 00, 01 | Author approval to freeze (OQ-06) |
-| 03 | [Repo spec](03-repo-spec/README.md) | drafted | 02 | WP-01 toolchain done; WP-02 (needs OQ-06) |
+| 02 | [Contract](02-contract/README.md) | frozen | 00, 01 | Author confirms the WP-02 signature table (D-028) |
+| 03 | [Repo spec](03-repo-spec/README.md) | drafted | 02 | WP-01 and WP-02 done; R1 review, then `npm run progress` and WP-03 |
 | 04 | [Visual layer](04-visual-layer/README.md) | drafted | 02, 03 | WP-03 |
 | 05 | [Solutions policy](05-solutions-policy/README.md) | drafted | 01 | Author review |
 | 06 | [References](06-references/README.md) | partly verified | none | WP-05a, WP-05b |

@@ -28,4 +28,4 @@ The same commands work on macOS, Windows and Linux.
 | `npm run typecheck`  | type-check without running                             |
 | `npm run check`      | typecheck, lint, format check and tests (what CI runs) |
 
-Exercise stubs, tests, `npm run progress` and the demos arrive in later work packages.
+The exercise stubs and test helpers are in place. Exercise tests, `npm run progress` and the demos arrive in later work packages.
