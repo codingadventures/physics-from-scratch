@@ -168,4 +168,4 @@ integrate(body, dt, gravity):
 
 ## Demo
 
-Planned: a falling-bodies demo with the given loop (`src/render/loop.ts`), run with `npm run demo:1`. It is not written yet, so the demo page currently says it arrives with Module 1. When it exists, it will show bodies falling under gravity and spinning at constant rate, stepped at the fixed `dt` of pill 1.5.
+Run `npm run demo:1` from `starter/`. The top half is visual V1: explicit and semi-implicit Euler on the same spring, with a timestep selector, so you can see what pill 1.4 derived (it runs without your code). The bottom half drops a circle, a box and a spinning box using your `createBody` and `integrate`, drawn with the debug draw and stepped by the given fixed-timestep loop. Space pauses and S steps once. There are no collisions yet, so bodies reset when they fall off screen. Until your functions are written, that half shows which TODO it hit.

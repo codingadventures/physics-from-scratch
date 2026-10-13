@@ -2,9 +2,11 @@
 // Picks the demo from ?demo=N and shows a friendly message when it needs an
 // exercise you have not finished yet (its stubs throw "TODO: ...").
 import { demo0 } from "./demo0";
+import { demo1 } from "./demo1";
+import { demo2 } from "./demo2";
 import type { Demo } from "./types";
 
-const demos: Record<string, Demo> = { "0": demo0 };
+const demos: Record<string, Demo> = { "0": demo0, "1": demo1, "2": demo2 };
 
 const app = document.getElementById("app")!;
 const id = new URLSearchParams(location.search).get("demo") ?? "0";

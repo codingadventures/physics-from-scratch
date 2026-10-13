@@ -180,4 +180,4 @@ step(dt):      1 every body moves by dt under this world's gravity
 
 ## Demo
 
-Not written yet. `npm run demo:2` is wired in `package.json`, but the demo harness only contains Demo 0 for now, so it will show a "Demo 2 arrives with Module 2" message until a Module 2 demo exists.
+Run `npm run demo:2` from `starter/`. Your `World` steps a spinning plank, a spinning square, a circle and a floor plane, with gravity off so nothing falls away. The dashed boxes are the AABBs from your `gather()`: watch the plank's box grow and shrink as it turns, as pill 2.3 predicts. The plane is not drawn as a box because its AABB is infinite. Space pauses and S steps once. Until your World is written, the page shows which TODO it hit.
