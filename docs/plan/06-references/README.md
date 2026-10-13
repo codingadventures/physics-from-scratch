@@ -1,6 +1,6 @@
 ---
 section: "06-references"
-status: drafted
+status: done
 depends_on: []
 owner: unassigned
 outputs: ["docs/plan/06-references/README.md", "docs/plan/06-references/dissections/"]
@@ -79,4 +79,4 @@ Dissection guide outline: pipeline map; data structures; broadphase approach; ma
 
 ## Open work
 
-WP-05a: done on 2026-10-13 (the tables above). WP-05b (Box2D Lite dissection, Opus-tier, high effort) is next. See `13-agent-plan`.
+WP-05a: done on 2026-10-13 (the tables above). WP-05b: done on 2026-10-13, see [dissections/box2d-lite.md](dissections/box2d-lite.md). Box2D v3 and Physac dissections are optional later work.
