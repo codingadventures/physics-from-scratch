@@ -21,5 +21,6 @@ Each advanced module revisits and rebuilds a standard-track piece, with before a
 | A5 | Determinism: fixed-point or controlled floats, ordering, replay tests | whole engine | |
 | A6 | Performance: spatial hashing or dynamic AABB trees, sleeping, islands | Module 3 | |
 | A7 | Port the stable core to Rust or C++ | whole engine | |
+| A8 | Integrators compared: explicit and semi-implicit Euler, velocity Verlet, RK4, implicit Euler; accuracy, energy behaviour, cost and stability on the same scenes | 1.4 | Pill 1.4 promises this comparison (D-018) |
 
 Suggested agents for every advanced module: general-purpose, Opus tier, high effort, plus a fresh-context review. Specs are written when work starts.

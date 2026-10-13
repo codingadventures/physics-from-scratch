@@ -26,7 +26,7 @@ position += velocity * dt     (B)
 
 The question is the order. Run (B) then (A) and position moves using the velocity from the _start_ of the step. This is **explicit Euler**. Run (A) then (B) and position moves using the velocity _at the end_ of the step, which already includes this step's gravity. This is **semi-implicit Euler** (also called symplectic Euler). Same cost, same two lines, swapped.
 
-The engine uses semi-implicit Euler (decision D-018). The same rule applies to rotation:
+This course uses semi-implicit Euler, for now, for three reasons: it costs exactly the same as explicit Euler, it does not pump energy into the system the way explicit Euler does (the spring below shows it), and it is what small engines such as Box2D Lite use, so what you build matches what you will read. It is not the only choice. Velocity Verlet, Runge-Kutta (RK4) and implicit methods trade more work per step for accuracy or stability, and the advanced track compares them side by side once your engine runs. The same rule applies to rotation:
 
 ```
 angularVelocity += angularAcceleration * dt   (no torque in Exercise 1)
