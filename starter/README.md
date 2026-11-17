@@ -17,7 +17,7 @@ Pick one:
 
 The same commands work on macOS, Windows and Linux.
 
-**Your editor.** Any editor works. The `.devcontainer/` is a standard `devcontainer.json`, and its VS Code settings are ignored by other tools. In a JetBrains IDE, use the Local path (open the folder, use its terminal). IntelliJ IDEA can also open the dev container (needs Docker), and JetBrains lists GitHub Codespaces as supported through Gateway. We have not tested either yet.
+**Your editor.** Any editor works. The `.devcontainer/` is a standard `devcontainer.json`, and its VS Code settings are ignored by other tools. In WebStorm (or another JetBrains IDE), the simplest path is the Local one: open the folder and use its terminal. WebStorm can also open the dev container (it needs Docker running; Colima is not supported yet): open `.devcontainer/devcontainer.json` and use the gutter action **Create Dev Container and Mount Sources**, and pick WebStorm if it asks for the IDE to run inside. JetBrains also lists GitHub Codespaces as supported through Gateway. We have not tested any of this yet, and we do not know whether the dev server's port is forwarded to your browser, so if the demo page does not open, browse to the address below yourself.
 
 ## Commands
 
