@@ -23,7 +23,9 @@ const CSS = `
 .pfs-ex button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
 .pfs-ex button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .pfs-ex .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px; }
-.pfs-ex .saved { color: var(--muted); font-size: 13px; margin-left: auto; }
+/* One fixed-height row under the editor: its content changes, its size never does. */
+.pfs-ex .statusbar { display: flex; justify-content: space-between; gap: 12px; height: 28px; line-height: 28px; padding: 0 2px; color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; }
+.pfs-ex .statusbar span { overflow: hidden; text-overflow: ellipsis; }
 .pfs-ex .editor { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
 .pfs-ex canvas { display: block; width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 8px; }
 .pfs-ex .controls { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
@@ -78,9 +80,16 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   const runBtn = el("button", { className: "primary", textContent: "Run  (Ctrl/⌘ Enter)" });
   const resetBtn = el("button", { textContent: "Reset" });
   const downloadBtn = el("button", { textContent: `Download ${opts.filename}` });
-  const savedLabel = el("span", { className: "saved" });
+  const savedLabel = el("span", { textContent: "Not saved yet" });
+  const tsLabel = el("span", { textContent: "Loading type help…" });
   const editorHost = el("div", { className: "editor" });
-  const left = el("div", {}, el("div", { className: "bar" }, runBtn, resetBtn, downloadBtn, savedLabel), editorHost);
+  const left = el(
+    "div",
+    {},
+    el("div", { className: "bar" }, runBtn, resetBtn, downloadBtn),
+    editorHost,
+    el("div", { className: "statusbar" }, savedLabel, tsLabel),
+  );
 
   // ---- right: canvas, controls, score ----
   const canvas = el("canvas");
@@ -277,6 +286,14 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     onRun: () => void run(),
   });
   if (load() !== null) showSaved(true);
+  // Type-aware help (the "." member list, hover types, error squiggles) arrives a moment later.
+  editor.enableTypeScript().then(
+    () => (tsLabel.textContent = "Type help on: press . for members"),
+    (e) => {
+      tsLabel.textContent = "Type help unavailable";
+      console.error(e);
+    },
+  );
 
   runBtn.onclick = () => void run();
   resetBtn.onclick = () => {
