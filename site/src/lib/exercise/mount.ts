@@ -122,7 +122,7 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   slider.setAttribute("aria-label", "Time");
   const time = el("span", { className: "time", textContent: "0.00 s" });
   const legend = el("div", { className: "legend" });
-  legend.innerHTML = `<span><i style="border-color:var(--accent);background:color-mix(in srgb,var(--accent) 18%,transparent)"></i>Your result</span><span><i style="border-color:#c2410c;opacity:.35"></i>Box2D</span>`;
+  legend.innerHTML = `<span><i style="border-color:var(--accent);background:color-mix(in srgb,var(--accent) 18%,transparent)"></i>Your result</span><span><i style="border-color:#c2410c;border-style:dashed"></i>Box2D</span>`;
   const score = el("div", { className: "score" });
   score.setAttribute("aria-live", "polite");
   const right = el("div", {}, canvas, el("div", { className: "controls" }, playBtn, slider, time), legend, score);
@@ -157,6 +157,8 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   };
   // Shown over the canvas when your code does not compile or does not run.
   let failure: { title: string; detail: string } | null = null;
+  // Whether your last run matched Box2D (null before the first run).
+  let matched: boolean | null = null;
   let frame = 0;
   let playing = false;
   let raf = 0;
@@ -224,41 +226,97 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     const ghost = oracle?.map((f) => f.bodies);
     const mover = launchScene.bodies.findIndex((b) => b.mass > 0);
 
-    if (ghost) {
-      // With no result of yours yet, the reference is the star of the show: full strength and filled.
-      const target = mine === null;
+    const dashedOutlines = (states: BodyState[], alpha: number): void => {
       ctx.save();
-      ctx.globalAlpha = target ? 1 : 0.22; // a real ghost: behind your box, never louder than it
+      ctx.globalAlpha = alpha;
       ctx.strokeStyle = pal.b;
-      ctx.lineWidth = target ? 2 : 1.5;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 3]);
+      states.forEach((s, i) => {
+        bodyOutline(view, i, s);
+        ctx.stroke();
+      });
+      ctx.restore();
+    };
+
+    if (ghost && mine === null) {
+      // No result of yours yet: the reference is the star of the show, full strength and filled.
+      ctx.save();
+      ctx.strokeStyle = pal.b;
+      ctx.lineWidth = 2;
       ctx.setLineDash([5, 4]);
       path(view, ghost, mover, ghost.length);
       ctx.setLineDash([]);
       ghost[Math.min(frame, ghost.length - 1)].forEach((s, i) => {
         bodyOutline(view, i, s);
-        if (target) {
-          ctx.fillStyle = launchScene.bodies[i].mass === 0 ? pal.grid : pal.b + "30";
-          ctx.fill();
-        }
+        ctx.fillStyle = launchScene.bodies[i].mass === 0 ? pal.grid : pal.b + "30";
+        ctx.fill();
         ctx.stroke();
       });
       ctx.restore();
     }
     if (mine) {
+      // Under your box: the faint reference path. Over it: the reference as a dashed outline, so
+      // a perfect match still shows (orange dashes on your outline) instead of disappearing.
+      if (ghost) {
+        ctx.save();
+        ctx.globalAlpha = 0.3;
+        ctx.strokeStyle = pal.b;
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([5, 4]);
+        path(view, ghost, mover, ghost.length);
+        ctx.restore();
+      }
+      // Blue while it differs from Box2D, green once it matches.
+      const mineColor = matched ? pal.normal : pal.a;
       ctx.save();
-      ctx.strokeStyle = pal.a;
+      ctx.strokeStyle = mineColor;
       ctx.lineWidth = 1.5;
       path(view, mine, mover, frame);
-      mine[Math.min(frame, mine.length - 1)].forEach((s, i) => {
+      const now = mine[Math.min(frame, mine.length - 1)];
+      now.forEach((s, i) => {
         if (![s.position.x, s.position.y, s.angle].every(Number.isFinite)) return;
         bodyOutline(view, i, s);
-        ctx.fillStyle = launchScene.bodies[i].mass === 0 ? pal.grid : pal.a + "30";
+        ctx.fillStyle = launchScene.bodies[i].mass === 0 ? pal.grid : mineColor + "30";
         ctx.fill();
-        ctx.strokeStyle = launchScene.bodies[i].mass === 0 ? pal.static : pal.a;
+        ctx.strokeStyle = launchScene.bodies[i].mass === 0 ? pal.static : mineColor;
         ctx.lineWidth = 2;
         ctx.stroke();
       });
       ctx.restore();
+      if (ghost) {
+        const g = ghost[Math.min(frame, ghost.length - 1)];
+        dashedOutlines(g, 0.95);
+        // A line between the two centres, with its length, for as long as they are apart.
+        const a = now[mover].position;
+        const b = g[mover].position;
+        const gap = Math.hypot(a.x - b.x, a.y - b.y);
+        if (Number.isFinite(gap) && gap > 0.01) {
+          const pa = worldToScreen(view, a);
+          const pb = worldToScreen(view, b);
+          ctx.save();
+          ctx.strokeStyle = pal.contact;
+          ctx.fillStyle = pal.contact;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(pa.x, pa.y);
+          ctx.lineTo(pb.x, pb.y);
+          ctx.stroke();
+          ctx.font = "12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+          const mx = (pa.x + pb.x) / 2;
+          const nearRight = mx > canvas.clientWidth - 110; // keep the label on the canvas
+          ctx.textAlign = nearRight ? "right" : "left";
+          ctx.fillText(`${gap.toFixed(2)} m apart`, mx + (nearRight ? -10 : 10), (pa.y + pb.y) / 2 - 6);
+          ctx.restore();
+        }
+      }
+      if (matched) {
+        ctx.save();
+        ctx.fillStyle = pal.normal;
+        ctx.font = "600 14px system-ui, sans-serif";
+        ctx.fillText("✓ Matches Box2D", 12, 22);
+        ctx.restore();
+      }
     }
     if (failure) drawFailure(view, failure, pal);
     slider.value = String(frame);
@@ -302,6 +360,7 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     const fail = (title: string, detail: string) => {
       runBtn.disabled = false;
       mine = null;
+      matched = null;
       fitTo(null);
       frame = 0;
       failure = { title, detail };
@@ -321,6 +380,7 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     mine = r.frames;
     fitTo(mine);
     const c: Comparison = compare(mine, oracle!, TOLERANCE);
+    matched = c.first === null;
     if (c.first === null) {
       setScore("pass", "Matches Box2D", `Largest difference ${c.maxError.toExponential(1)} over ${steps} steps and every body. The bar is ${TOLERANCE.toExponential(0)}.`);
     } else {
