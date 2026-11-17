@@ -15,5 +15,5 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["src", "tests", "test-helpers", "scripts", "*.ts"]
+  "include": ["src", "tests", "test-helpers", "oracle", "scripts", "*.ts"]
 }
