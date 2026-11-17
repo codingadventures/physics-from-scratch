@@ -1,0 +1,52 @@
+---
+const { title } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const full = title ? `${title} · Physics From Scratch` : "Physics From Scratch";
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{full}</title>
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href={`${base}/`}>Physics From Scratch</a>
+      <nav>
+        <a href={`${base}/course/`}>Course</a>
+        <a href={`${base}/journal/`}>Journal</a>
+        <a href="https://github.com/codingadventures/physics-from-scratch">GitHub</a>
+      </nav>
+    </header>
+    <main><slot /></main>
+    <footer>Code MIT, text CC BY 4.0 · © 2026 Gio Campo</footer>
+  </body>
+</html>
+<style is:global>
+  :root {
+    color-scheme: light dark;
+    --ink: #26251f; --muted: #6f6d64; --bg: #f4f3ee; --line: #dcdad2; --accent: #2563c9; --code: #eae8e0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink: #e8e6df; --muted: #a3a198; --bg: #101012; --line: #34343b; --accent: #6ea0f5; --code: #1d1d21; }
+  }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.6 system-ui, sans-serif; }
+  header, main, footer { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+  header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; padding-top: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+  .brand { font-weight: 700; color: var(--ink); text-decoration: none; }
+  nav { display: flex; gap: 16px; }
+  a { color: var(--accent); }
+  h1 { font-size: 1.8rem; line-height: 1.2; margin: 1.5rem 0 0.5rem; }
+  h2 { font-size: 1.25rem; margin: 2rem 0 0.5rem; }
+  code, pre { font: 0.88em ui-monospace, Menlo, Consolas, monospace; background: var(--code); border-radius: 4px; }
+  code { padding: 0.1em 0.3em; }
+  pre { padding: 12px; overflow-x: auto; }
+  pre code { padding: 0; background: none; }
+  table { border-collapse: collapse; display: block; overflow-x: auto; }
+  th, td { border: 1px solid var(--line); padding: 4px 10px; text-align: left; }
+  .visual { margin: 1rem 0; }
+  .meta { color: var(--muted); font-size: 0.9rem; }
+  footer { color: var(--muted); font-size: 0.85rem; padding-top: 32px; padding-bottom: 32px; }
+</style>
