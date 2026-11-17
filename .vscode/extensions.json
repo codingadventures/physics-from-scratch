@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "pomdtr.excalidraw-editor",
+    "astro-build.astro-vscode",
+    "esbenp.prettier-vscode"
+  ]
+}
