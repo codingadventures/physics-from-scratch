@@ -27,11 +27,11 @@ The engine has three shapes. Each is a record with a `kind` field naming the var
 
 **The plane** is the odd one, so take it slowly. It has a unit `normal` `n` and a number `d` (named `offset` in the code). A point `p` is _inside the solid_ when
 
-```
-dot(n, p) <= d
-```
+$$
+n \cdot p \le d
+$$
 
-and the boundary surface is where `dot(n, p) = d`. The normal points out of the solid, into free space. A plane ignores its body's `position` and `angle` (the contract says so), and `createBody` rejects a plane with non-zero mass.
+and the boundary surface is where $n \cdot p = d$. The normal points out of the solid, into free space. A plane ignores its body's `position` and `angle` (the contract says so), and `createBody` rejects a plane with non-zero mass.
 
 Examples, each a solid half-space:
 
@@ -50,43 +50,51 @@ None.
 
 ## The maths
 
-**Why the normal must be unit length.** The projection of `p` onto the direction `n` is `dot(n, p)` only when `|n| = 1`. The surface is the set of points whose projection is `d`, so `d` is the signed distance of the surface from the origin along `n` (negative when the surface lies on the far side, as for a ceiling). The **signed distance** of a point from the surface is then
+**Why the normal must be unit length.** The projection of $p$ onto the direction $n$ is $n \cdot p$ only when $|n| = 1$. The surface is the set of points whose projection is $d$, so $d$ is the signed distance of the surface from the origin along `n` (negative when the surface lies on the far side, as for a ceiling). The **signed distance** of a point from the surface is then
 
-```
-s(p) = dot(n, p) - d
-```
+$$
+s(p) = n \cdot p - d
+$$
 
-positive outside (free space), zero on the surface, negative inside the solid. If `n` were not unit, `s` would be scaled by `|n|` and every depth computed from it would be wrong by that factor. Floor example: `n = (0,1)`, `d = 0`, `p = (3, 2)`: `s = 2`, 2 m above the floor. `p = (3, -0.5)`: `s = -0.5`, half a metre inside. Narrowphase (Module 4) builds circle-plane and box-plane contacts from exactly this quantity.
+positive outside (free space), zero on the surface, negative inside the solid. If $n$ were not unit, $s$ would be scaled by $|n|$ and every depth computed from it would be wrong by that factor. Floor example: $n = (0,1)$, $d = 0$, $p = (3, 2)$: $s = 2$, 2 m above the floor. $p = (3, -0.5)$: $s = -0.5$, half a metre inside. Narrowphase (Module 4) builds circle-plane and box-plane contacts from exactly this quantity.
 
 **Local and world coordinates.** A box is easiest to describe in its **local frame**: origin at the body's centre, axes along the box's own sides. Its four corners are `(±halfWidth, ±halfHeight)`, always, whatever the body's `angle` or `position`. To compare with other bodies we need **world** coordinates: rotate by `angle`, then translate by `position`.
 
-The rotation by an angle `θ` counter-clockwise is the 2D rotation matrix. Derive it from where the axes go. The vector `(1, 0)` rotated by `θ` becomes `(cos θ, sin θ)` (basic trigonometry). The vector `(0, 1)` is `(1, 0)` turned 90° counter-clockwise, so it becomes `(cos θ, sin θ)` turned 90° counter-clockwise, which is `perp` from Exercise 0: `(-sin θ, cos θ)`. Rotation is linear, so the images of these two columns determine everything:
+The rotation by an angle $\theta$ counter-clockwise is the 2D rotation matrix. Derive it from where the axes go. The vector $(1, 0)$ rotated by $\theta$ becomes $(\cos\theta, \sin\theta)$ (basic trigonometry). The vector $(0, 1)$ is $(1, 0)$ turned 90° counter-clockwise, so it becomes $(\cos\theta, \sin\theta)$ turned 90° counter-clockwise, which is `perp` from Exercise 0: $(-\sin\theta, \cos\theta)$. Rotation is linear, so the images of these two columns determine everything:
 
-```
-R(θ) = [ cos θ  -sin θ ]
-       [ sin θ   cos θ ]
+$$
+R(\theta) = \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}
+$$
 
-world.x = position.x + cos θ · local.x - sin θ · local.y
-world.y = position.y + sin θ · local.x + cos θ · local.y
-```
+$$
+\begin{aligned}
+\text{world}_x &= \text{position}_x + \cos\theta \cdot \text{local}_x - \sin\theta \cdot \text{local}_y \\
+\text{world}_y &= \text{position}_y + \sin\theta \cdot \text{local}_x + \cos\theta \cdot \text{local}_y
+\end{aligned}
+$$
 
-**Worked example.** A box with `halfWidth = 1`, `halfHeight = 0.5` at `position = (2, 3)` with `angle = π/2`. Its local corner `(1, 0.5)`: `cos(π/2) = 0`, `sin(π/2) = 1`, so
+**Worked example.** A box with `halfWidth = 1`, `halfHeight = 0.5` at position $(2, 3)$ with angle $\pi/2$. Its local corner $(1, 0.5)$: $\cos(\pi/2) = 0$, $\sin(\pi/2) = 1$, so
 
-```
-world.x = 2 + 0 · 1 - 1 · 0.5 = 1.5
-world.y = 3 + 1 · 1 + 0 · 0.5 = 4
-```
+$$
+\begin{aligned}
+\text{world}_x &= 2 + 0 \cdot 1 - 1 \cdot 0.5 = 1.5 \\
+\text{world}_y &= 3 + 1 \cdot 1 + 0 \cdot 0.5 = 4
+\end{aligned}
+$$
 
-Check by hand: turning `(1, 0.5)` a quarter turn counter-clockwise gives `perp = (-0.5, 1)`, and adding `(2, 3)` gives `(1.5, 4)`. Same.
+Check by hand: turning $(1, 0.5)$ a quarter turn counter-clockwise gives `perp` $= (-0.5, 1)$, and adding $(2, 3)$ gives $(1.5, 4)$. Same.
 
-**The inverse.** To go from world to local, subtract `position`, then rotate by `-θ`. The matrix for `-θ` is the transpose of `R(θ)` (since `cos(-θ) = cos θ` and `sin(-θ) = -sin θ`):
+**The inverse.** To go from world to local, subtract `position`, then rotate by $-\theta$. The matrix for $-\theta$ is the transpose of $R(\theta)$ (since $\cos(-\theta) = \cos\theta$ and $\sin(-\theta) = -\sin\theta$):
 
-```
-local.x =  cos θ · d.x + sin θ · d.y
-local.y = -sin θ · d.x + cos θ · d.y      where d = world - position
-```
+$$
+\begin{aligned}
+\text{local}_x &= \ \ \cos\theta \cdot d_x + \sin\theta \cdot d_y \\
+\text{local}_y &= -\sin\theta \cdot d_x + \cos\theta \cdot d_y
+\end{aligned}
+\qquad \text{where } d = \text{world} - \text{position}
+$$
 
-Test with the example: `d = (1.5 - 2, 4 - 3) = (-0.5, 1)`, `cos = 0`, `sin = 1`: `local.x = 0 · (-0.5) + 1 · 1 = 1` and `local.y = -1 · (-0.5) + 0 · 1 = 0.5`. So `local = (1, 0.5)`: it round-trips.
+Test with the example: $d = (1.5 - 2,\ 4 - 3) = (-0.5, 1)$, $\cos = 0$, $\sin = 1$: $\text{local}_x = 0 \cdot (-0.5) + 1 \cdot 1 = 1$ and $\text{local}_y = -1 \cdot (-0.5) + 0 \cdot 1 = 0.5$. So local $= (1, 0.5)$: it round-trips.
 
 No exercise in this module asks you to write these transforms: Exercise 2 (the AABB of a rotated box) builds on the same rotated-corner idea, and Module 4 uses both directions heavily.
 

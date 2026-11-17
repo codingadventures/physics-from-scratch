@@ -38,7 +38,7 @@ Builds statically; deploys to GitHub Pages through a workflow; every pill render
 
 ## Slice built (2026-11-17, D-038)
 
-Verified against docs.astro.build the same day: deploy guide (`withastro/action`, `actions/deploy-pages`, `site` and `base`), content collections (`glob` loader, `astro/zod`) and Markdown processors. Astro 7 uses the Sätteri Markdown processor by default; the old remark plugin option needs an extra package, so the site avoids plugins.
+Verified against docs.astro.build the same day: deploy guide (`withastro/action`, `actions/deploy-pages`, `site` and `base`), content collections (`glob` loader, `astro/zod`) and Markdown processors. Astro 7 uses the Sätteri Markdown processor by default. Since D-040 the site uses the Unified processor (`@astrojs/markdown-remark`) so that remark-math and rehype-katex work. Markers still need no plugin.
 
 - **Ingest:** `site/src/content.config.ts` reads `../course/m*/*.md` in place. Page ids come from frontmatter (`/course/1.4/`, `/course/exercise-1/`).
 - **Visuals:** Astro leaves `<!-- visual: id -->` in the HTML; `site/src/lib/visuals.ts` replaces each with the real widget, imported from `starter/src/visuals`. Unknown ids show "not built yet" (pill 2.3's `V3`).

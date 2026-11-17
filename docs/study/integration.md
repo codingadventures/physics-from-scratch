@@ -15,13 +15,13 @@ Feeds pill 1.4. Time to read: about 10 minutes.
 
 ## 1. The one idea
 
-Physics gives you rates: position changes at the rate of velocity, velocity changes at the rate of acceleration. A computer cannot follow a smooth curve. It jumps forward by `dt` and pretends the rate stayed constant during the jump. That jump is **integration**. Every method is a different guess about what the rate did inside the jump.
+Physics gives you rates: position changes at the rate of velocity, velocity changes at the rate of acceleration. A computer cannot follow a smooth curve. It jumps forward by $dt$ and pretends the rate stayed constant during the jump. That jump is **integration**. Every method is a different guess about what the rate did inside the jump.
 
 ## 2. Explain it to anyone
 
-A flip book. Each page is one `dt`. You never see the motion between pages, only where the ball is on each one. To draw the next page you ask two questions: how fast is it going now, and where does that put it?
+A flip book. Each page is one $dt$. You never see the motion between pages, only where the ball is on each one. To draw the next page you ask two questions: how fast is it going now, and where does that put it?
 
-- Smaller `dt`: more pages, smoother motion, more drawing.
+- Smaller $dt$: more pages, smoother motion, more drawing.
 - Gravity does not move the ball. It changes how fast the ball is moving. The speed moves the ball.
 
 ## 3. Why the order matters
@@ -43,11 +43,11 @@ All reproducible in a few lines of code. Derivations are in pill 1.4.
 
 | Setup | Result | Check |
 |---|---|---|
-| Free fall, `g = 9.81`, `dt = 1/60`, 60 steps, semi-implicit | `y = -4.98675` | `-g·dt²·n(n+1)/2` with n = 60 |
-| Same, explicit | `y = -4.82325` | `-g·dt²·n(n-1)/2` |
-| Exact | `y = -4.905` | `-½·g·t²` |
-| `g = 10`, `dt = 0.1`, 3 steps, semi-implicit | `v = -3`, `y = -0.6` | `v = -g·n·dt`, `y = -g·dt²·n(n+1)/2` |
-| Spring, period 1 s, `dt = 1/60`, explicit | energy ×1.924 per period | `(1 + ω²dt²)^60`, ω = 2π |
+| Free fall, $g = 9.81$, $dt = 1/60$, 60 steps, semi-implicit | $y = -4.98675$ | $-g\,dt^2 \cdot n(n+1)/2$ with $n = 60$ |
+| Same, explicit | $y = -4.82325$ | $-g\,dt^2 \cdot n(n-1)/2$ |
+| Exact | $y = -4.905$ | $-\tfrac12 g t^2$ |
+| $g = 10$, $dt = 0.1$, 3 steps, semi-implicit | $v = -3$, $y = -0.6$ | $v = -g\,n\,dt$, $y = -g\,dt^2 \cdot n(n+1)/2$ |
+| Spring, period 1 s, $dt = 1/60$, explicit | energy ×1.924 per period | $(1 + \omega^2 dt^2)^{60}$, $\omega = 2\pi$ |
 | Same spring, semi-implicit | energy stays within about ±5% of 1 | measured 0.950 to 1.055 over 10 s |
 
 I ran every row. Note the free-fall rows: both schemes miss the exact answer by the same amount (0.08175), in opposite directions. The order only wins on oscillating systems.
@@ -64,17 +64,17 @@ Background from general knowledge, not checked against `06-references`: treat as
 | RK4 | four samples per step, weighted | 4 | 4 |
 | Implicit Euler | solve for the end state | a solve per step | 1 |
 
-Check: velocity Verlet on the free fall above gives `-4.905` exactly (constant acceleration is its easy case). Advanced track A8 compares them properly.
+Check: velocity Verlet on the free fall above gives $-4.905$ exactly (constant acceleration is its easy case). Advanced track A8 compares them properly.
 
 ## 6. Where it lives in the engine
 
 - `starter/src/dynamics/integrate.ts`: the exercise. Static bodies (`invMass = 0`) are skipped. Angle works the same way: `angle += angularVelocity * dt`.
-- The step order is frozen (D-033): integrate, collide, solve. A resting body therefore sinks `g·dt²` per step before the solver pushes it back. That is pill 5.8's story.
+- The step order is frozen (D-033): integrate, collide, solve. A resting body therefore sinks $g\,dt^2$ per step before the solver pushes it back. That is pill 5.8's story.
 - `dt` must be fixed. Pill 1.5 says why.
 
 ## 7. Test yourself
 
-1. A ball is at rest, `dt = 0.5`, `g = 10`. What are `v` and `y` after 2 steps, semi-implicit? (`v = -10`, `y = -7.5`: step 1 gives `v = -5`, `y = -2.5`; step 2 gives `v = -10`, `y = -7.5`.)
+1. A ball is at rest, $dt = 0.5$, $g = 10$. What are `v` and `y` after 2 steps, semi-implicit? ($v = -10$, $y = -7.5$: step 1 gives $v = -5$, $y = -2.5$; step 2 gives $v = -10$, $y = -7.5$.)
 2. Why does gravity not appear in the position line?
 3. Say in one sentence why a spring explodes under explicit Euler.
 4. Which order does your `integrate` use, and which test fails if you swap?

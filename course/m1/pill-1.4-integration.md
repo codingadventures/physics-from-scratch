@@ -43,46 +43,56 @@ Both schemes run on the same spring with the same `dt`, and the plot shows total
 
 ## The maths
 
-**Free fall, step by step.** Start at rest at `y = 0`, with `v₀ = 0`, gravity `-g`, step `dt`. Semi-implicit: step `k` first sets `vₖ = vₖ₋₁ - g dt`, then `yₖ = yₖ₋₁ + vₖ dt`. So after `n` steps:
+**Free fall, step by step.** Start at rest at $y = 0$, with $v_0 = 0$, gravity $-g$, step $dt$. Semi-implicit: step $k$ first sets $v_k = v_{k-1} - g\,dt$, then $y_k = y_{k-1} + v_k\,dt$. So after $n$ steps:
 
-```
-vₙ = -g · n · dt
-yₙ = Σₖ₌₁ⁿ vₖ dt = -g dt² Σₖ₌₁ⁿ k = -g dt² · n(n+1)/2
-```
+$$
+\begin{aligned}
+v_n &= -g\, n\, dt \\
+y_n &= \sum_{k=1}^{n} v_k\,dt = -g\,dt^2 \sum_{k=1}^{n} k = -g\,dt^2 \cdot \frac{n(n+1)}{2}
+\end{aligned}
+$$
 
-(using `1 + 2 + ... + n = n(n+1)/2`). For `dt = 1/60`, `g = 9.81`, `n = 60` (one second):
+(using $1 + 2 + \dots + n = n(n+1)/2$). For $dt = 1/60$, $g = 9.81$, $n = 60$ (one second):
 
-```
-yₙ = -9.81 · (60 · 61 / 2) / 3600 = -9.81 · 1830 / 3600 = -4.98675
-```
+$$
+y_n = -9.81 \cdot \frac{60 \cdot 61 / 2}{3600} = -9.81 \cdot \frac{1830}{3600} = -4.98675
+$$
 
-The exact answer is `-½ g t² = -½ · 9.81 · 1 = -4.905`. The discrete result is 0.08175 too far. In general, with `t = n dt`:
+The exact answer is $-\tfrac12 g t^2 = -\tfrac12 \cdot 9.81 \cdot 1 = -4.905$. The discrete result is 0.08175 too far. In general, with $t = n\,dt$:
 
-```
-yₙ = -g dt² (n² + n)/2 = -½ g (t² + t dt)
-```
+$$
+y_n = -g\,dt^2\,\frac{n^2 + n}{2} = -\tfrac12 g\,(t^2 + t\,dt)
+$$
 
-so the error is `½ g t dt`, which is `½ · 9.81 · (1/60) = 0.08175` at `t = 1`. It shrinks in proportion to `dt`: first-order accuracy.
+so the error is $\tfrac12 g\,t\,dt$, which is $\tfrac12 \cdot 9.81 \cdot (1/60) = 0.08175$ at $t = 1$. It shrinks in proportion to $dt$: first-order accuracy.
 
-**Explicit Euler** does (B) first, so step `k` moves by the velocity from step `k-1`, and the sum runs one term shorter:
+**Explicit Euler** does (B) first, so step $k$ moves by the velocity from step $k-1$, and the sum runs one term shorter:
 
-```
-yₙ = -g dt² Σₖ₌₀ⁿ⁻¹ k = -g dt² · n(n-1)/2 = -9.81 · 1770 / 3600 = -4.82325
-```
+$$
+y_n = -g\,dt^2 \sum_{k=0}^{n-1} k = -g\,dt^2 \cdot \frac{n(n-1)}{2} = -9.81 \cdot \frac{1770}{3600} = -4.82325
+$$
 
-It is off by the same amount, `0.08175`, in the other direction. For plain free fall the two schemes are equally accurate; they differ for oscillating systems.
+It is off by the same amount, $0.08175$, in the other direction. For plain free fall the two schemes are equally accurate; they differ for oscillating systems.
 
-**Energy on a spring.** Take unit mass and a spring with angular frequency `ω`. Acceleration is `-ω² x`, and energy is `E = ½ (v² + ω² x²)`, constant in reality. Explicit Euler is `x' = x + v dt`, `v' = v - ω² x dt`. Expand `v'² + ω² x'²`:
+**Energy on a spring.** Take unit mass and a spring with angular frequency $\omega$. Acceleration is $-\omega^2 x$, and energy is $E = \tfrac12 (v^2 + \omega^2 x^2)$, constant in reality. Explicit Euler is $x' = x + v\,dt$, $v' = v - \omega^2 x\,dt$. Expand $v'^2 + \omega^2 x'^2$:
 
-```
-(v - ω² x dt)² + ω² (x + v dt)²
-= v² - 2ω² x v dt + ω⁴ x² dt² + ω² x² + 2ω² x v dt + ω² v² dt²
-= (1 + ω² dt²)(v² + ω² x²)
-```
+$$
+\begin{aligned}
+&(v - \omega^2 x\,dt)^2 + \omega^2 (x + v\,dt)^2 \\
+&= v^2 - 2\omega^2 x v\,dt + \omega^4 x^2 dt^2 + \omega^2 x^2 + 2\omega^2 x v\,dt + \omega^2 v^2 dt^2 \\
+&= (1 + \omega^2 dt^2)(v^2 + \omega^2 x^2)
+\end{aligned}
+$$
 
-The cross terms cancel, and the energy is multiplied by `1 + ω² dt²` **every step**, exactly. Take a spring with a period of one second (`ω = 2π`) and `dt = 1/60`: `ω dt = 0.10472`, `(ω dt)² = 0.010966`, so one period (60 steps) multiplies the energy by `1.010966⁶⁰ = 1.924` (also checked by running the two-line update). After ten seconds it is multiplied by about 695. The spring explodes.
+The cross terms cancel, and the energy is multiplied by $1 + \omega^2 dt^2$ **every step**, exactly. Take a spring with a period of one second ($\omega = 2\pi$) and $dt = 1/60$: $\omega\,dt = 0.10472$, $(\omega\,dt)^2 = 0.010966$, so one period (60 steps) multiplies the energy by $1.010966^{60} = 1.924$ (also checked by running the two-line update). After ten seconds it is multiplied by about 695. The spring explodes.
 
-Semi-implicit Euler is `v' = v - ω² x dt`, then `x' = x + v' dt`. It is not energy-conserving either, but it conserves a nearby quantity exactly: `Q = v² + ω² x² - ω² dt · x v`. Proof: after the step, `x' - dt v' = x`, so `ω² x'² - ω² dt x' v' = ω² x' x`, and `Q' = v'² + ω² x x'`. Substitute `x' = x + dt v'`: `Q' = v'(v' + ω² dt x) + ω² x²`. Since `v' + ω² dt x = v`, this is `v'v + ω² x² = (v - ω² dt x)v + ω² x² = Q`. (Also checked numerically over 6000 steps.) `Q` differs from `v² + ω² x²` by at most a fraction `ω dt / 2` (because `ω|x||v| ≤ (v² + ω² x²)/2`), about 5% here, so the true energy stays within about 5% of a constant (Q/2) and never grows. That is the benefit of the swap, and why most engines use it. Fiedler's "Integration Basics" shows the same contrast on a damped spring.
+Semi-implicit Euler is $v' = v - \omega^2 x\,dt$, then $x' = x + v'\,dt$. It is not energy-conserving either, but it conserves a nearby quantity exactly:
+
+$$
+Q = v^2 + \omega^2 x^2 - \omega^2\,dt\; x v
+$$
+
+Proof: after the step, $x' - dt\,v' = x$, so $\omega^2 x'^2 - \omega^2 dt\,x' v' = \omega^2 x' x$, and $Q' = v'^2 + \omega^2 x x'$. Substitute $x' = x + dt\,v'$: $Q' = v'(v' + \omega^2 dt\,x) + \omega^2 x^2$. Since $v' + \omega^2 dt\,x = v$, this is $v'v + \omega^2 x^2 = (v - \omega^2 dt\,x)v + \omega^2 x^2 = Q$. (Also checked numerically over 6000 steps.) $Q$ differs from $v^2 + \omega^2 x^2$ by at most a fraction $\omega\,dt/2$ (because $\omega|x||v| \le (v^2 + \omega^2 x^2)/2$), about 5% here, so the true energy stays within about 5% of a constant ($Q/2$) and never grows. That is the benefit of the swap, and why most engines use it. Fiedler's "Integration Basics" shows the same contrast on a damped spring.
 
 Neither scheme is exact. Semi-implicit Euler still drifts in _phase_ (the oscillation gets a slightly wrong period), and we accept that.
 

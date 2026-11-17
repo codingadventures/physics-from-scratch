@@ -20,12 +20,12 @@ A rigid body is an object that never deforms. Every point of it keeps its distan
 In 2D a rigid body can do exactly two things: slide and spin. Describing where it is therefore takes three numbers:
 
 - a **position**, `x` and `y`: where the body's centre of mass is;
-- an **angle**, `θ`: how far the body is rotated about that centre.
+- an **angle**, $\theta$: how far the body is rotated about that centre.
 
 Describing how it is moving takes three more, the rates of change of the first three:
 
 - a **linear velocity**, `vx` and `vy`, in metres per second;
-- an **angular velocity**, `ω`, in radians per second.
+- an **angular velocity**, $\omega$, in radians per second.
 
 That is the whole motion state: six numbers. (In 3D it would be twelve: three for position, three for orientation, and three each for the two velocities. Flatland saves a lot of work.)
 
@@ -69,21 +69,20 @@ Why the centre of mass, and not, say, the bottom-left corner? Because it makes l
 
 Two relationships connect the six state numbers, and they are the definition of velocity:
 
-```
-d(position)/dt = linearVelocity
-d(angle)/dt    = angularVelocity
-```
+$$
+\frac{d\,\text{position}}{dt} = \text{linearVelocity}, \qquad \frac{d\,\text{angle}}{dt} = \text{angularVelocity}
+$$
 
 Pill 1.4 turns these into code by replacing `d/dt` with a small finite step `dt`. Note the symmetry: angle and angular velocity are the rotational twins of position and linear velocity. Much of 2D rigid body dynamics is that twin pattern, with a scalar standing in for a vector.
 
-A sign check on the conventions. With `angle = π/2` and `angularVelocity = -1`, the body is turned a quarter of a turn counter-clockwise from its starting orientation, and it is currently turning clockwise (negative), at one radian per second, which is a bit under a sixth of a turn per second (1 rad is 360°/(2π) ≈ 57.3°).
+A sign check on the conventions. With `angle` $= \pi/2$ and `angularVelocity = -1`, the body is turned a quarter of a turn counter-clockwise from its starting orientation, and it is currently turning clockwise (negative), at one radian per second, which is a bit under a sixth of a turn per second (1 rad is $360^\circ/2\pi \approx 57.3^\circ$).
 
 ## Common mistakes
 
 - **Treating `angle` as degrees.** It is radians everywhere. `Math.sin` and `Math.cos` take radians too.
 - **Putting `y` down.** The canvas has `y` down; the world has `y` up. Physics code never thinks about the canvas.
 - **Mixing up position and angle.** Position is where the centre is; angle is a rotation about it. Rotating a body never changes its position.
-- **Expecting angles to stay in [0, 2π).** Nothing wraps `angle` in this engine; after a few spins it is a large number, and that is fine.
+- **Expecting angles to stay in $[0, 2\pi)$.** Nothing wraps `angle` in this engine; after a few spins it is a large number, and that is fine.
 
 ## Checkpoint
 

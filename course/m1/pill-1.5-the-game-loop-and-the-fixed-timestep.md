@@ -15,7 +15,7 @@ The screen refreshes at its own rate and frames take uneven time. How do we adva
 
 ## The idea
 
-The obvious loop measures how long the last frame took and passes that to the physics: `step(frameTime)`. This is a **variable timestep**. It keeps the game at the right speed on any hardware, but the _results_ now depend on the machine. In pill 1.4 we found that a free-falling body's position error is `½ g t dt`, proportional to the step size. At `t = 1 s` that error is about `9.81 / 60 / 2 = 0.082 m` at 60 Hz, but `9.81 / 30 / 2 = 0.164 m` at 30 Hz and `9.81 / 144 / 2 = 0.034 m` at 144 Hz. The same jump lands at different heights on different machines. Worse, collision code assumes bodies move a modest distance per step: with a huge `dt` a fast body skips over a thin wall (tunnelling), and springs can blow up (pill 1.4).
+The obvious loop measures how long the last frame took and passes that to the physics: `step(frameTime)`. This is a **variable timestep**. It keeps the game at the right speed on any hardware, but the _results_ now depend on the machine. In pill 1.4 we found that a free-falling body's position error is $\tfrac12 g\,t\,dt$, proportional to the step size. At $t = 1\ \text{s}$ that error is about $9.81/60/2 = 0.082\ \text{m}$ at 60 Hz, but $9.81/30/2 = 0.164\ \text{m}$ at 30 Hz and $9.81/144/2 = 0.034\ \text{m}$ at 144 Hz. The same jump lands at different heights on different machines. Worse, collision code assumes bodies move a modest distance per step: with a huge `dt` a fast body skips over a thin wall (tunnelling), and springs can blow up (pill 1.4).
 
 The fix is to decouple the two clocks:
 
