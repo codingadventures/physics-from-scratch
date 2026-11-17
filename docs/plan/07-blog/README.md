@@ -44,3 +44,14 @@ Verified against docs.astro.build the same day: deploy guide (`withastro/action`
 - **Visuals:** Astro leaves `<!-- visual: id -->` in the HTML; `site/src/lib/visuals.ts` replaces each with the real widget, imported from `starter/src/visuals`. Unknown ids show "not built yet" (pill 2.3's `V3`).
 - **Deploy:** `.github/workflows/pages.yml` on every push to `main`. CI builds the site on every PR.
 - **Not done yet:** Journal posts, About page, Module and exercise page chrome, auto-links for "pill 1.2" mentions, mobile pass on every visual, reduced-motion check on the site (the player itself respects it).
+
+## In-browser exercises (2026-11-17, D-045, D-046)
+
+Built for Exercise 1 only, at `/try/integrate/` and embedded in the exercise page with `<!-- visual: ex1-integrate -->`. Code is in `site/src/lib/exercise/`.
+
+- **Run path:** editor (CodeMirror 6) → Sucrase (types stripped) → Web Worker that calls the learner's `integrate` for every body each step → comparison with the Box2D trace, per body and per field, against the same 1e-9 bar as `starter/oracle/m1.oracle.test.ts`.
+- **Failures:** syntax and type errors show a red "Compilation Failure" banner (type errors need the type help to have loaded); a throw shows "Runtime Error" with the real exception; a loop shows "Timed Out". The run stops.
+- **Saving today:** localStorage under one key per exercise, a request that the browser keep it, an honest label ("Saved in this browser only" until the browser agrees), Download and Open for a file copy. Clearing site data, private windows and long absences in Safari can remove it.
+- **Next, in order:** (1) an in-browser copy of the `starter/` tree, so later exercises run on top of earlier ones, with project download and upload; (2) optional "Link folder" (File System Access API, Chrome and Edge); (3) GitHub mirroring per D-046 once OQ-26 and OQ-27 are answered. Planned shape of (3): GitHub App on one learner-chosen repository, a small token-exchange service, learner code in a sandboxed frame, writes to a `progress` branch.
+- **Cost:** about 218 KB gzipped for the page script, 70 KB for the Box2D bundle, about 1.06 MB gzipped for the TypeScript worker. The last two load lazily and only on exercise pages.
+- **Dependencies (all permissive):** CodeMirror 6, Sucrase, comlink, `@typescript/vfs`, `@valtown/codemirror-ts` (worker half only; unmaintained upstream), TypeScript 6.0.3 (dev).
