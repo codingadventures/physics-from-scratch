@@ -22,13 +22,14 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "progress": "node scripts/progress.mjs",
-    "test:given": "vitest run src test-helpers",
+    "test:given": "vitest run src test-helpers oracle/lib",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check": "npm run typecheck && npm run lint && npm run format:check && npm test",
-    "check:course": "npm run typecheck && npm run lint && npm run format:check && npm run test:given && node scripts/progress.mjs --expect-stubs"
+    "check:course": "npm run typecheck && npm run lint && npm run format:check && npm run test:given && node scripts/progress.mjs --expect-stubs",
+    "oracle": "vitest run --config vitest.oracle.config.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

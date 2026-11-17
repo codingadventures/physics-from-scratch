@@ -6,3 +6,4 @@ coverage/
 .env
 .env.*
 .astro/
+starter/oracle/out/
