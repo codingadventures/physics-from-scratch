@@ -1,19 +1,14 @@
 // Mounts the real starter widgets into <div data-visual="id"> placeholders.
 // Each visual is loaded on demand, so a page only downloads the code it uses.
 
-// `sketchy` is opt-in per visual: the hand-drawn Rough.js look. Add `?sketchy=1` or
-// `?sketchy=0` to a page URL to compare.
-type Options = { sketchy: boolean };
-type Mount = (el: HTMLElement, o: Options) => Promise<void>;
-
-const sketchyDefault: Record<string, boolean> = { "v0-vector-add": true };
+type Mount = (el: HTMLElement) => Promise<void>;
 
 const visuals: Record<string, Mount> = {
   "v1-euler-energy": async (el) => {
     const { createEulerEnergyVisual } = await import("../../../starter/src/visuals/eulerEnergy");
     createEulerEnergyVisual(el);
   },
-  "v0-vector-add": async (el, { sketchy }) => {
+  "v0-vector-add": async (el) => {
     const [{ recordTrace }, { createPlayer }, { makeDraggable }, { tracedVectorAdd }] =
       await Promise.all([
         import("../../../starter/src/trace/trace"),
@@ -34,10 +29,6 @@ const visuals: Record<string, Mount> = {
       ],
       () => player.setRecording(record()),
     );
-    if (sketchy) {
-      const { sketchyContext } = await import("./sketchy");
-      player.view.ctx = sketchyContext(player.view.ctx);
-    }
     player.goTo(2);
   },
 };
@@ -70,9 +61,7 @@ export function mountVisuals(): void {
       el.className = "visual meta";
       continue;
     }
-    const q = new URLSearchParams(location.search).get("sketchy");
-    const sketchy = q === null ? (sketchyDefault[id] ?? false) : q === "1";
-    mount(el, { sketchy }).catch((e) => {
+    mount(el).catch((e) => {
       el.textContent = "This visual failed to load.";
       console.error(e);
     });
