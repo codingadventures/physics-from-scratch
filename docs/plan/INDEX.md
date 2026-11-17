@@ -12,9 +12,10 @@ physics-course/
   starter/            the TypeScript starter project: given code, stubs, tests, demos
   site/               the website
   journal/            the author's own posts (written by the author)
+  docs/study/         study guides for the author, one per topic (D-039)
 ```
 
-`docs/plan/`, the root files, `starter/` (toolchain, given types, exercise stubs, test helpers), `.devcontainer/` and `.github/` exist today. Everything else is created by work packages in `13-agent-plan`.
+`docs/plan/`, `docs/study/`, `course/` (M0-M2), `site/`, the root files, `starter/` (toolchain, given types, exercise stubs, test helpers, two visuals), `.devcontainer/` and `.github/` exist today. Everything else is created by work packages in `13-agent-plan`.
 
 ## Sections
 
@@ -27,7 +28,7 @@ physics-course/
 | 04 | [Visual layer](04-visual-layer/README.md) | drafted | 02, 03 | WP-03 framework done; must-have visuals come with module content |
 | 05 | [Solutions policy](05-solutions-policy/README.md) | drafted | 01 | Author review |
 | 06 | [References](06-references/README.md) | done | none | Add the PDF list from the author (OQ-07); optional Box2D v3 and Physac dissections |
-| 07 | [Blog and site](07-blog/README.md) | drafted | 00, 04 | WP-04 |
+| 07 | [Blog and site](07-blog/README.md) | slice built | 00, 04 | Site live on GitHub Pages; Journal posts and more visuals come later |
 | 08 | [Modules](08-modules/README.md) | outlines drafted | 01, 02, 03, 04 | Phase 2 work packages |
 | 09 | [Advanced track](09-advanced/README.md) | outline drafted | 08 complete | After the author finishes the standard track |
 | 10 | [Backlog](10-backlog/README.md) | drafted | none | none |

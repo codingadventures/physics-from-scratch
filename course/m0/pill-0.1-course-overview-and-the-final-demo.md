@@ -7,7 +7,6 @@ prerequisites: []
 visual: "none"
 readings_essential: ["gaul-tutsplus-part-1"]
 readings_deeper: ["catto-sequential-impulses-gdc2006"]
-  ["Erin Catto, Fast and Simple Physics using Sequential Impulses (GDC 2006)"]
 ---
 
 ## The question

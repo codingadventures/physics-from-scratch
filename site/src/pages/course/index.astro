@@ -1,0 +1,25 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import { modules } from "../../lib/modules";
+const base = import.meta.env.BASE_URL;
+const entries = (await getCollection("course")).sort((a, b) =>
+  a.id.localeCompare(b.id, undefined, { numeric: true }),
+);
+const label = (e: (typeof entries)[number]) =>
+  e.data.title ? `${e.data.id} ${e.data.title}` : `Exercise ${e.data.id.replace("exercise-", "")}`;
+---
+<Base title="Course">
+  <h1>Course</h1>
+  <p class="meta">Short pills, then an exercise every few pills.</p>
+  {Object.entries(modules).map(([m, name]) => (
+    <section>
+      <h2>{m.toUpperCase()} · {name}</h2>
+      <ul>
+        {entries.filter((e) => e.data.module === m).map((e) => (
+          <li><a href={`${base}/course/${e.id}/`}>{label(e)}</a>{e.data.minutes ? <span class="meta"> · {e.data.minutes} min</span> : null}</li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</Base>
