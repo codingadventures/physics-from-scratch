@@ -8,6 +8,18 @@ const visuals: Record<string, Mount> = {
     const { createEulerEnergyVisual } = await import("../../../starter/src/visuals/eulerEnergy");
     createEulerEnergyVisual(el);
   },
+  "v0-dot": async (el) => {
+    const { createDotVisual } = await import("../../../starter/src/visuals/vectorVisuals");
+    createDotVisual(el);
+  },
+  "v0-cross": async (el) => {
+    const { createCrossVisual } = await import("../../../starter/src/visuals/vectorVisuals");
+    createCrossVisual(el);
+  },
+  "v0-projection": async (el) => {
+    const { createProjectionVisual } = await import("../../../starter/src/visuals/vectorVisuals");
+    createProjectionVisual(el);
+  },
   "v0-vector-add": async (el) => {
     const [{ recordTrace }, { createPlayer }, { makeDraggable }, { tracedVectorAdd }] =
       await Promise.all([
