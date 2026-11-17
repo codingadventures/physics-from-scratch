@@ -8,11 +8,16 @@ import { createEditor } from "./editor";
 import { runLearnerCode } from "./run";
 import { compare, type Comparison } from "./compare";
 import { launchScene } from "./scene";
+import { PROJECT_CHANGED, editedFiles, getFile, openProjectZip, projectZip, removeFile, setFile } from "./project";
 
 const TOLERANCE = 1e-9; // same bar as the milestone check in starter/oracle/m1.oracle.test.ts
-const STORAGE_KEY = "pfs:exercise:integrate:v1";
 
-type Options = { stub: string; filename: string };
+type Options = {
+  stub: string;
+  filename: string;
+  /** The file's path in the starter project, for example `starter/src/dynamics/integrate.ts`. */
+  path: string;
+};
 
 const CSS = `
 .pfs-ex { margin: 1rem 0; container-type: inline-size; }
@@ -28,6 +33,9 @@ const CSS = `
 /* One fixed-height row under the editor: its content changes, its size never does. */
 .pfs-ex .statusbar { display: flex; justify-content: space-between; gap: 12px; height: 28px; line-height: 28px; padding: 0 2px; color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; }
 .pfs-ex .statusbar span { overflow: hidden; text-overflow: ellipsis; }
+.pfs-ex .projectbar { display: flex; align-items: center; gap: 8px; height: 40px; padding-top: 4px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; }
+.pfs-ex .projectbar span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.pfs-ex .projectbar button { min-height: 30px; font-size: 13px; padding: 0 10px; }
 .pfs-ex .editor { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
 .pfs-ex canvas { display: block; width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 8px; }
 .pfs-ex .controls { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
@@ -79,24 +87,6 @@ function drawFailure(view: View, f: { title: string; detail: string }, pal: Pale
   ctx.restore();
 }
 
-function load(): string | null {
-  try {
-    return localStorage.getItem(STORAGE_KEY);
-  } catch {
-    return null;
-  }
-}
-
-function save(code: string | null): boolean {
-  try {
-    if (code === null) localStorage.removeItem(STORAGE_KEY);
-    else localStorage.setItem(STORAGE_KEY, code);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
   props: Partial<HTMLElementTagNameMap[K]> & { className?: string } = {},
@@ -123,12 +113,20 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   const savedLabel = el("span", { textContent: "Not saved yet" });
   const tsLabel = el("span", { textContent: "Loading type help…" });
   const editorHost = el("div", { className: "editor" });
+  // Every file you have edited, together: one zip out, one zip in.
+  const projectLabel = el("span", { textContent: "" });
+  const projectDownload = el("button", { textContent: "Download project" });
+  const projectOpen = el("button", { textContent: "Open project" });
+  projectOpen.title = "Load the exercise files from a project zip you downloaded earlier";
+  const projectPicker = el("input", { type: "file", accept: ".zip,application/zip", hidden: true });
+  const projectBar = el("div", { className: "projectbar" }, projectLabel, projectDownload, projectOpen, projectPicker);
   const left = el(
     "div",
     {},
     el("div", { className: "bar" }, runBtn, resetBtn, downloadBtn, openBtn, picker),
     editorHost,
     el("div", { className: "statusbar" }, savedLabel, tsLabel),
+    projectBar,
   );
 
   // ---- right: canvas, controls, score ----
@@ -469,21 +467,39 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
         : "Stored in this browser only. Clearing site data removes it, so Download a copy to keep it."
       : "";
   };
+  // The project row: how many files you have edited across the course, and the zip buttons.
+  let projectNote = "";
+  let keepNote = false;
+  const refreshProject = () => {
+    const n = editedFiles().length;
+    projectLabel.textContent = projectNote || (n === 0 ? "Your files: none edited yet" : `Your files: ${n} edited`);
+    projectLabel.title = editedFiles().map(([path]) => path).join("\n");
+    projectDownload.disabled = n === 0;
+    projectDownload.title = n === 0 ? "Edit a file first" : "Every file you have edited, as a zip laid out like starter/";
+  };
+  const saveCode = (code: string): boolean => {
+    // Code equal to the original stub is not an edit: it leaves the project.
+    const ok = code === opts.stub ? removeFile(opts.path) : setFile(opts.path, code);
+    if (keepNote) keepNote = false; // the autosave right after opening a zip must not hide its message
+    else projectNote = "";
+    refreshProject();
+    return ok;
+  };
   const showSaved = (ok: boolean) => {
     describeSaved(ok);
     if (ok) void keepStorage().then((k) => k !== kept && ((kept = k), describeSaved(true)));
   };
   editorHost.textContent = "";
   editorHost.removeAttribute("style");
-  const editor = createEditor(editorHost, load() ?? opts.stub, {
+  const editor = createEditor(editorHost, getFile(opts.path) ?? opts.stub, {
     onChange: () => {
       savedLabel.textContent = "Editing…";
       clearTimeout(saveTimer);
-      saveTimer = window.setTimeout(() => showSaved(save(editor.get())), 400);
+      saveTimer = window.setTimeout(() => showSaved(saveCode(editor.get())), 400);
     },
     onRun: () => void run(),
   });
-  if (load() !== null) showSaved(true);
+  if (getFile(opts.path) !== null) showSaved(true);
   // Type-aware help (the "." member list, hover types, error squiggles) arrives a moment later.
   editor.enableTypeScript().then(
     () => (tsLabel.textContent = "Type help on: press . for members"),
@@ -497,7 +513,8 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   resetBtn.onclick = () => {
     if (!confirm("Replace your code with the original stub? Download first if you want to keep it.")) return;
     editor.set(opts.stub);
-    save(null);
+    removeFile(opts.path);
+    refreshProject();
     savedLabel.textContent = "Reset";
     // Back to the target view: nothing of yours to show any more.
     setPlaying(false);
@@ -526,6 +543,36 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     a.click();
     URL.revokeObjectURL(url);
   };
+  projectDownload.onclick = () => {
+    const url = URL.createObjectURL(projectZip());
+    el("a", { href: url, download: "physics-from-scratch-project.zip" }).click();
+    URL.revokeObjectURL(url);
+  };
+  projectOpen.onclick = () => projectPicker.click();
+  projectPicker.onchange = async () => {
+    const file = projectPicker.files?.[0];
+    projectPicker.value = "";
+    if (!file) return;
+    try {
+      const { loaded, skipped } = await openProjectZip(await file.arrayBuffer());
+      projectNote =
+        loaded.length === 0
+          ? `Nothing to open: no exercise files in ${file.name}`
+          : `Opened ${loaded.length} file${loaded.length === 1 ? "" : "s"}${skipped ? `, skipped ${skipped} other` : ""}`;
+    } catch (e) {
+      projectNote = e instanceof Error ? e.message : String(e);
+    }
+    refreshProject();
+  };
+  // A project opened from a zip replaces what is in the editor (one edit, so undo brings it back).
+  window.addEventListener(PROJECT_CHANGED, () => {
+    const code = getFile(opts.path);
+    if (code !== null && code !== editor.get()) {
+      keepNote = true;
+      editor.set(code);
+    }
+  });
+  refreshProject();
   playBtn.onclick = () => {
     // Play runs your code when it has changed since the last Run (or that Run failed). Only the
     // untouched stub plays the Box2D target on its own.

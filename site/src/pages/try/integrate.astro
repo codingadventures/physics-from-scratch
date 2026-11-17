@@ -17,7 +17,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 <script>
   import stub from "../../../../starter/src/dynamics/integrate.ts?raw";
   import { mountExercise } from "../../lib/exercise/mount";
-  mountExercise(document.getElementById("exercise")!, { stub, filename: "integrate.ts" }).catch((e) => {
+  mountExercise(document.getElementById("exercise")!, {
+    stub,
+    filename: "integrate.ts",
+    path: "starter/src/dynamics/integrate.ts",
+  }).catch((e) => {
     document.getElementById("exercise")!.textContent = "The editor failed to load.";
     console.error(e);
   });

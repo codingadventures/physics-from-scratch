@@ -26,7 +26,7 @@ const visuals: Record<string, Mount> = {
       import("./exercise/mount"),
       import("../../../starter/src/dynamics/integrate.ts?raw"),
     ]);
-    await mountExercise(el, { stub, filename: "integrate.ts" });
+    await mountExercise(el, { stub, filename: "integrate.ts", path: "starter/src/dynamics/integrate.ts" });
   },
   "v0-vector-add": async (el) => {
     const [{ recordTrace }, { createPlayer }, { makeDraggable }, { tracedVectorAdd }] =
