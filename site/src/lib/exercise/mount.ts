@@ -159,6 +159,8 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   let failure: { title: string; detail: string } | null = null;
   // Whether your last run matched Box2D (null before the first run).
   let matched: boolean | null = null;
+  // The same, per body: each body is green if its whole run matches Box2D, blue if not.
+  let bodyOk: boolean[] = [];
   let frame = 0;
   let playing = false;
   let raf = 0;
@@ -267,19 +269,19 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
         path(view, ghost, mover, ghost.length);
         ctx.restore();
       }
-      // Blue while it differs from Box2D, green once it matches.
-      const mineColor = matched ? pal.normal : pal.a;
+      // Every body is drawn the same way: blue while it differs from Box2D, green once it matches.
+      const colorOf = (i: number) => (bodyOk[i] ? pal.normal : pal.a);
       ctx.save();
-      ctx.strokeStyle = mineColor;
+      ctx.strokeStyle = colorOf(mover);
       ctx.lineWidth = 1.5;
       path(view, mine, mover, frame);
       const now = mine[Math.min(frame, mine.length - 1)];
       now.forEach((s, i) => {
         if (![s.position.x, s.position.y, s.angle].every(Number.isFinite)) return;
         bodyOutline(view, i, s);
-        ctx.fillStyle = launchScene.bodies[i].mass === 0 ? pal.grid : mineColor + "30";
+        ctx.fillStyle = colorOf(i) + "30";
         ctx.fill();
-        ctx.strokeStyle = launchScene.bodies[i].mass === 0 ? pal.static : mineColor;
+        ctx.strokeStyle = colorOf(i);
         ctx.lineWidth = 2;
         ctx.stroke();
       });
@@ -287,13 +289,12 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
       if (ghost) {
         const g = ghost[Math.min(frame, ghost.length - 1)];
         dashedOutlines(g, 0.95);
-        // A line between the two centres, with its length, for as long as they are apart.
-        const a = now[mover].position;
-        const b = g[mover].position;
-        const gap = Math.hypot(a.x - b.x, a.y - b.y);
-        if (Number.isFinite(gap) && gap > 0.01) {
-          const pa = worldToScreen(view, a);
-          const pb = worldToScreen(view, b);
+        // For every body: a line between the two centres, with its length, while they are apart.
+        now.forEach((s, i) => {
+          const gap = Math.hypot(s.position.x - g[i].position.x, s.position.y - g[i].position.y);
+          if (!Number.isFinite(gap) || gap <= 0.01) return;
+          const pa = worldToScreen(view, s.position);
+          const pb = worldToScreen(view, g[i].position);
           ctx.save();
           ctx.strokeStyle = pal.contact;
           ctx.fillStyle = pal.contact;
@@ -308,7 +309,7 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
           ctx.textAlign = nearRight ? "right" : "left";
           ctx.fillText(`${gap.toFixed(2)} m apart`, mx + (nearRight ? -10 : 10), (pa.y + pb.y) / 2 - 6);
           ctx.restore();
-        }
+        });
       }
       if (matched) {
         ctx.save();
@@ -381,6 +382,7 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     fitTo(mine);
     const c: Comparison = compare(mine, oracle!, TOLERANCE);
     matched = c.first === null;
+    bodyOk = c.perBody.map((e) => e <= TOLERANCE);
     if (c.first === null) {
       setScore("pass", "Matches Box2D", `Largest difference ${c.maxError.toExponential(1)} over ${steps} steps and every body. The bar is ${TOLERANCE.toExponential(0)}.`);
     } else {

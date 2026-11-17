@@ -14,6 +14,8 @@ export type Comparison = {
   maxError: number;
   /** The earliest field that differs by more than the tolerance, or null. */
   first: Mismatch | null;
+  /** Largest absolute difference per body (same order as the scene's bodies). */
+  perBody: number[];
 };
 
 const fields: Array<[string, (s: BodyState) => number]> = [
@@ -28,6 +30,7 @@ const fields: Array<[string, (s: BodyState) => number]> = [
 export function compare(mine: BodyState[][], oracle: Trace, tolerance: number): Comparison {
   let maxError = 0;
   let first: Mismatch | null = null;
+  const perBody: number[] = oracle[0].bodies.map(() => 0);
   for (let frame = 0; frame < oracle.length; frame++) {
     for (let body = 0; body < oracle[frame].bodies.length; body++) {
       for (const [field, get] of fields) {
@@ -36,9 +39,10 @@ export function compare(mine: BodyState[][], oracle: Trace, tolerance: number): 
         // NaN or Infinity count as an infinite error, never as a pass.
         const err = Number.isFinite(a) ? Math.abs(a - b) : Infinity;
         if (err > maxError) maxError = err;
+        if (err > perBody[body]) perBody[body] = err;
         if (first === null && err > tolerance) first = { frame, body, field, mine: a, oracle: b };
       }
     }
   }
-  return { maxError, first };
+  return { maxError, first, perBody };
 }
