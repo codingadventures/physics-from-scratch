@@ -1,6 +1,6 @@
 ---
 section: "07-blog"
-status: drafted
+status: slice built
 depends_on: ["00-goal", "04-visual-layer"]
 owner: unassigned
 outputs: ["site/", ".github/workflows/pages.yml"]
@@ -35,3 +35,12 @@ Home; course index; one page per module; one page per pill (with embedded visual
 ## Definition of done
 
 Builds statically; deploys to GitHub Pages through a workflow; every pill renders with its visual; visuals work on mobile and respect reduced motion; the Journal area exists and renders the author's posts.
+
+## Slice built (2026-11-17, D-038)
+
+Verified against docs.astro.build the same day: deploy guide (`withastro/action`, `actions/deploy-pages`, `site` and `base`), content collections (`glob` loader, `astro/zod`) and Markdown processors. Astro 7 uses the Sätteri Markdown processor by default; the old remark plugin option needs an extra package, so the site avoids plugins.
+
+- **Ingest:** `site/src/content.config.ts` reads `../course/m*/*.md` in place. Page ids come from frontmatter (`/course/1.4/`, `/course/exercise-1/`).
+- **Visuals:** Astro leaves `<!-- visual: id -->` in the HTML; `site/src/lib/visuals.ts` replaces each with the real widget, imported from `starter/src/visuals`. Unknown ids show "not built yet" (pill 2.3's `V3`).
+- **Deploy:** `.github/workflows/pages.yml` on every push to `main`. CI builds the site on every PR.
+- **Not done yet:** Journal posts, About page, Module and exercise page chrome, auto-links for "pill 1.2" mentions, mobile pass on every visual, reduced-motion check on the site (the player itself respects it).

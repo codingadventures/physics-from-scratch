@@ -28,7 +28,8 @@ Use this repository as a template (**Use this template** on GitHub) so you have 
 | `docs/plan/` | The plan, one folder per section (start at INDEX.md) |
 | `course/` | Lesson content: pills and exercise pages (not yet written) |
 | `starter/` | The TypeScript starter project: given code, stubs, tests, demos (toolchain only so far) |
-| `site/` | The website (not yet created) |
+| `site/` | The website, published at https://codingadventures.github.io/physics-from-scratch/ |
+| `docs/study/` | Study guides for the author, one per topic |
 | `journal/` | The author's own posts about doing the course (written by the author) |
 
 ## Working with agents

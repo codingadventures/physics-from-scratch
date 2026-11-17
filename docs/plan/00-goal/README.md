@@ -14,6 +14,13 @@ definition_of_done: "The author has reviewed the goal and the success criteria a
 
 A public, hands-on course that teaches how a 2D rigid body physics engine works by having the learner build one in TypeScript, test-first, with interactive visualisations that unfold the maths step by step. The project produces the lessons, the exercises with tests, the visual widgets and a public blog. **The engine itself is the learner's output.** The project ships stubs and tests, not a finished engine.
 
+### Vision update (2026-11-17, from Gio; see D-037)
+
+- **The bar:** you can explain 2D physics to your grandma. Lessons use everyday pictures first, maths second.
+- **Fun:** the course should be enjoyable to read and to build, not only correct.
+- **Gio writes the lessons.** Gio learns each topic and writes the lesson himself. Agents prepare study material (`docs/study/`), the site, the stubs and the tests. They do not write lessons for later modules until Gio says so.
+- **Consequence:** the M0-M2 pills drafted by agents are first drafts to be rewritten in this voice. How much and in which order is open (OQ-21).
+
 ## State of the project today
 
 **Exists:**
