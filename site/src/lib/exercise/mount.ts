@@ -99,7 +99,7 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   slider.setAttribute("aria-label", "Time");
   const time = el("span", { className: "time", textContent: "0.00 s" });
   const legend = el("div", { className: "legend" });
-  legend.innerHTML = `<span><i style="border-color:var(--accent);background:color-mix(in srgb,var(--accent) 18%,transparent)"></i>Your result</span><span><i style="border-color:#c2410c;opacity:.4"></i>Box2D</span>`;
+  legend.innerHTML = `<span><i style="border-color:var(--accent);background:color-mix(in srgb,var(--accent) 18%,transparent)"></i>Your result</span><span><i style="border-color:#c2410c;opacity:.35"></i>Box2D</span>`;
   const score = el("div", { className: "score" });
   score.setAttribute("aria-live", "polite");
   const right = el("div", {}, canvas, el("div", { className: "controls" }, playBtn, slider, time), legend, score);
@@ -108,6 +108,24 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   // ---- state ----
   let oracle: Trace | null = null;
   let mine: BodyState[][] | null = null;
+  // The scene alone fits x from -5.5 to 4.6 and y from -1.3 to 5.5. Your result can widen it.
+  const sceneBounds = { minX: -6, maxX: 5, minY: -1.5, maxY: 5.8 };
+  let bounds = sceneBounds;
+  const fitTo = (frames: BodyState[][] | null) => {
+    bounds = { ...sceneBounds };
+    if (!frames) return;
+    const LIMIT = 60; // ignore wild values (NaN, 1e9): they stay off screen rather than zoom to nothing
+    for (const f of frames) {
+      for (const s of f) {
+        const { x, y } = s.position;
+        if (!Number.isFinite(x) || !Number.isFinite(y) || Math.abs(x) > LIMIT || Math.abs(y) > LIMIT) continue;
+        bounds.minX = Math.min(bounds.minX, x - 1);
+        bounds.maxX = Math.max(bounds.maxX, x + 1);
+        bounds.minY = Math.min(bounds.minY, y - 1);
+        bounds.maxY = Math.max(bounds.maxY, y + 1);
+      }
+    }
+  };
   let frame = 0;
   let playing = false;
   let raf = 0;
@@ -164,9 +182,11 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
 
   function draw(): void {
     const pal: Palette = palette();
-    // Fit the whole scene (x from -5.5 to 4.6, y from -1.3 to 5.5) into whatever size the canvas has.
-    view.pixelsPerMetre = Math.min(canvas.clientWidth / 11.5, canvas.clientHeight / 7.4);
-    view.center = { x: -0.45, y: 2.1 };
+    // Fit the view to the scene, and to your result too, so a box that flies off still shows.
+    const w = bounds.maxX - bounds.minX;
+    const h = bounds.maxY - bounds.minY;
+    view.pixelsPerMetre = Math.min(canvas.clientWidth / w, canvas.clientHeight / h);
+    view.center = { x: (bounds.minX + bounds.maxX) / 2, y: (bounds.minY + bounds.maxY) / 2 };
     clear(view, pal);
     const { ctx } = view;
     const ghost = oracle?.map((f) => f.bodies);
@@ -176,7 +196,7 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
       // With no result of yours yet, the reference is the star of the show: full strength and filled.
       const target = mine === null;
       ctx.save();
-      ctx.globalAlpha = target ? 1 : 0.4;
+      ctx.globalAlpha = target ? 1 : 0.22; // a real ghost: behind your box, never louder than it
       ctx.strokeStyle = pal.b;
       ctx.lineWidth = target ? 2 : 1.5;
       ctx.setLineDash([5, 4]);
@@ -249,6 +269,7 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     runBtn.disabled = false;
     if (!r.ok) {
       mine = null;
+      fitTo(null);
       draw();
       const what = { syntax: "Syntax error", runtime: "Your code threw", timeout: "Timed out" }[r.kind];
       setScore("fail", what, `<code></code>`);
@@ -256,6 +277,7 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
       return;
     }
     mine = r.frames;
+    fitTo(mine);
     const c: Comparison = compare(mine, oracle!, TOLERANCE);
     if (c.first === null) {
       setScore("pass", "Matches Box2D", `Largest difference ${c.maxError.toExponential(1)} over ${steps} steps and every body. The bar is ${TOLERANCE.toExponential(0)}.`);
