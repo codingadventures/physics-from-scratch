@@ -140,6 +140,12 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   score.setAttribute("aria-live", "polite");
   const right = el("div", {}, canvas, el("div", { className: "controls" }, playBtn, slider, time), legend, score);
   root.append(el("div", { className: "pfs-grid" }, left, right));
+  // Until the Box2D reference and the editor have loaded, the buttons would do nothing. Say so
+  // instead of letting a click vanish.
+  runBtn.disabled = playBtn.disabled = true;
+  editorHost.textContent = "Loading the editor…";
+  editorHost.style.padding = "12px";
+  editorHost.style.color = "var(--muted)";
 
   // ---- state ----
   let oracle: Trace | null = null;
@@ -367,6 +373,22 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
 
   // ---- running ----
   async function run(): Promise<void> {
+    try {
+      await runInner();
+    } catch (e) {
+      // Never leave the Run button stuck: show whatever went wrong.
+      runBtn.disabled = false;
+      mine = null;
+      matched = null;
+      fitTo(null);
+      frame = 0;
+      failure = { title: "Runtime Error", detail: e instanceof Error ? `${e.name}: ${e.message}` : String(e) };
+      draw();
+      setScore("fail", "Runtime Error", "");
+    }
+  }
+
+  async function runInner(): Promise<void> {
     setPlaying(false);
     runBtn.disabled = true;
     setScore("", "Running…");
@@ -383,7 +405,7 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
       score.querySelector("code")!.textContent = detail;
     };
     // Type errors first (when the type help has loaded): the real project would not compile them.
-    const typeErrors = await editor.typeErrors();
+    const typeErrors = await editor.typeErrors().catch(() => [] as string[]); // type help is optional
     if (typeErrors.length > 0) return fail("Compilation Failure", typeErrors[0]);
     const r = await runLearnerCode(editor.get(), launchScene);
     runBtn.disabled = false;
@@ -416,6 +438,8 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   const showSaved = (ok: boolean) => {
     savedLabel.textContent = ok ? "Saved in this browser" : "Not saved (browser storage is blocked)";
   };
+  editorHost.textContent = "";
+  editorHost.removeAttribute("style");
   const editor = createEditor(editorHost, load() ?? opts.stub, {
     onChange: () => {
       savedLabel.textContent = "Editing…";
@@ -457,6 +481,7 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     frame = Number(slider.value);
     draw();
   };
+  runBtn.disabled = playBtn.disabled = false;
   new ResizeObserver(draw).observe(canvas);
   setScore("", "Press Play to see the target", "This is Box2D with the launch your code has to reproduce. When you are ready, write integrate and press Run.");
   draw();
