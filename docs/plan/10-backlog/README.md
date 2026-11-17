@@ -23,5 +23,5 @@ Not excluded, just not scheduled.
 - Collision filtering layers, sensors and triggers
 - Multithreading
 - Integration with a game engine (the UE5 Chaos architecture is a natural comparison)
-- A hosted course site with in-browser coding and saved progress
+- In-browser coding is built for Exercise 1 (D-045). Still to do: the other exercises, an in-browser copy of the whole `starter/` tree so later exercises build on earlier ones (with a project download and upload), a "Link folder" button using the File System Access API (Chrome and Edge only), and mirroring progress to the learner's GitHub repository (D-046)
 - Reference solutions for learners (see 05-solutions-policy)

@@ -115,14 +115,18 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   // ---- left: editor ----
   const runBtn = el("button", { className: "primary", textContent: "Run  (Ctrl/⌘ Enter)" });
   const resetBtn = el("button", { textContent: "Reset" });
-  const downloadBtn = el("button", { textContent: `Download ${opts.filename}` });
+  const downloadBtn = el("button", { textContent: "Download" });
+  downloadBtn.title = `Save your code as ${opts.filename}`;
+  const openBtn = el("button", { textContent: "Open" });
+  openBtn.title = `Load a ${opts.filename} you downloaded earlier into the editor`;
+  const picker = el("input", { type: "file", accept: ".ts,.txt,text/plain", hidden: true });
   const savedLabel = el("span", { textContent: "Not saved yet" });
   const tsLabel = el("span", { textContent: "Loading type help…" });
   const editorHost = el("div", { className: "editor" });
   const left = el(
     "div",
     {},
-    el("div", { className: "bar" }, runBtn, resetBtn, downloadBtn),
+    el("div", { className: "bar" }, runBtn, resetBtn, downloadBtn, openBtn, picker),
     editorHost,
     el("div", { className: "statusbar" }, savedLabel, tsLabel),
   );
@@ -438,8 +442,36 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
 
   // ---- editor and saving ----
   let saveTimer = 0;
+  // Browser storage can be cleared (site data, private windows, Safari after a week away). Ask the
+  // browser to treat ours as persistent, and say plainly which case we are in.
+  let kept = false;
+  let persistAsked = false;
+  const keepStorage = async (): Promise<boolean> => {
+    try {
+      if (!navigator.storage?.persist) return false;
+      if (await navigator.storage.persisted()) return true;
+      if (persistAsked) return false;
+      persistAsked = true;
+      return await navigator.storage.persist();
+    } catch {
+      return false;
+    }
+  };
+  const describeSaved = (ok: boolean) => {
+    savedLabel.textContent = !ok
+      ? "Not saved (browser storage is blocked)"
+      : kept
+        ? "Saved · the browser will keep it"
+        : "Saved in this browser only";
+    savedLabel.title = ok
+      ? kept
+        ? "Stored in this browser. Download a copy if you want a backup."
+        : "Stored in this browser only. Clearing site data removes it, so Download a copy to keep it."
+      : "";
+  };
   const showSaved = (ok: boolean) => {
-    savedLabel.textContent = ok ? "Saved in this browser" : "Not saved (browser storage is blocked)";
+    describeSaved(ok);
+    if (ok) void keepStorage().then((k) => k !== kept && ((kept = k), describeSaved(true)));
   };
   editorHost.textContent = "";
   editorHost.removeAttribute("style");
@@ -478,6 +510,15 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     frame = 0;
     draw();
     setScore("", "Press Play to see the target", "This is Box2D with the launch your code has to reproduce. When you are ready, write integrate and press Run.");
+  };
+  openBtn.onclick = () => picker.click();
+  picker.onchange = async () => {
+    const file = picker.files?.[0];
+    picker.value = "";
+    if (!file) return;
+    if (file.size > 200_000) return void alert("That file is too big to be your integrate.ts.");
+    editor.set(await file.text()); // one edit, so Ctrl/⌘ Z brings your previous code back
+    savedLabel.textContent = "Opened " + file.name;
   };
   downloadBtn.onclick = () => {
     const url = URL.createObjectURL(new Blob([editor.get()], { type: "text/plain" }));
