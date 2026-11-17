@@ -15,15 +15,15 @@ Why does every body store `invMass` (one over the mass) instead of the mass itse
 
 ## The idea
 
-Newton's second law says that a force `F` on a body of mass `m` gives it an acceleration `a = F / m`. Written with the inverse mass, that is `a = F * invMass`. Impulses behave the same way: an impulse `J` (a sudden change of momentum, Module 5) changes velocity by `Δv = J / m = J * invMass`. Almost every place the engine touches mass, it touches it as a _division by m_, so we store the result of the division once.
+Newton's second law says that a force $F$ on a body of mass $m$ gives it an acceleration $a = F/m$. Written with the inverse mass, that is $a = F \cdot \text{invMass}$. Impulses behave the same way: an impulse $J$ (a sudden change of momentum, Module 5) changes velocity by $\Delta v = J/m = J \cdot \text{invMass}$. Almost every place the engine touches mass, it touches it as a _division by m_, so we store the result of the division once.
 
 That is convenient, but the real reason is **static bodies**. A floor, a wall or a platform should not move however hard something hits it. Physically, that is a body of infinite mass. Infinity is awkward in code, but its inverse is clean:
 
-```
-infinite mass  <=>  invMass = 0
-```
+$$
+\text{infinite mass} \iff \text{invMass} = 0
+$$
 
-A body with `invMass = 0` has `Δv = J * 0 = 0` for any impulse, however large. No special case, no `if (isStatic)` scattered through the solver: the formulas just work, and the immovable body stays put. The tempting alternative, storing `mass = 0` for static and dividing by it, goes wrong quietly: `1 / 0` in JavaScript and TypeScript raises no error. It evaluates to `Infinity`, so a body meant to be immovable would instead get an infinite inverse mass, the weakest possible body, with no warning.
+A body with `invMass = 0` has $\Delta v = J \cdot 0 = 0$ for any impulse, however large. No special case, no `if (isStatic)` scattered through the solver: the formulas just work, and the immovable body stays put. The tempting alternative, storing `mass = 0` for static and dividing by it, goes wrong quietly: `1 / 0` in JavaScript and TypeScript raises no error. It evaluates to `Infinity`, so a body meant to be immovable would instead get an infinite inverse mass, the weakest possible body, with no warning.
 
 The course convention (frozen in the contract) is: in a `BodyDef`, **`mass: 0` means static**. `createBody` (Exercise 1) turns that into `invMass = 0` and `invInertia = 0`. Static bodies neither translate nor rotate.
 
@@ -38,14 +38,16 @@ None.
 
 ## The maths
 
-Check the claim that storing the inverse costs nothing. For a normal body of mass 4 kg, `invMass = 1/4 = 0.25`. A force of 8 N gives `a = 8 / 4 = 2 m/s²` or `8 * 0.25 = 2 m/s²`. Same answer.
+Check the claim that storing the inverse costs nothing. For a normal body of mass 4 kg, $\text{invMass} = 1/4 = 0.25$. A force of 8 N gives $a = 8/4 = 2\ \text{m/s}^2$ or $8 \cdot 0.25 = 2\ \text{m/s}^2$. Same answer.
 
 Now the static case, to see the formulas stay well behaved. Two bodies, A with mass 4 (`invMass = 0.25`) and B static (`invMass = 0`), are pressed together by equal and opposite impulses of size `J = 8` along a line. Momentum change is shared by:
 
-```
-ΔvA = J * invMassA = 8 * 0.25 = 2
-ΔvB = J * invMassB = 8 * 0     = 0
-```
+$$
+\begin{aligned}
+\Delta v_A &= J \cdot \text{invMass}_A = 8 \cdot 0.25 = 2 \\
+\Delta v_B &= J \cdot \text{invMass}_B = 8 \cdot 0 = 0
+\end{aligned}
+$$
 
 Body A takes the whole velocity change and B takes none. Later, the collision response formula (pill 5.2) has the sum `invMassA + invMassB` in a denominator. For a dynamic body against a static one that sum is `0.25 + 0 = 0.25`, still positive, so nothing divides by zero. If _both_ bodies were static the sum would be 0 and a naive solver would divide by it. The engine therefore never solves static-static pairs (`collide` returns null for them, per the contract).
 

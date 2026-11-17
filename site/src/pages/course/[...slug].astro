@@ -1,22 +1,32 @@
 ---
-import { getCollection, render } from "astro:content";
+import { render } from "astro:content";
 import Base from "../../layouts/Base.astro";
+import { base, href, label, lessonsInOrder } from "../../lib/course";
 export async function getStaticPaths() {
-  const entries = await getCollection("course");
-  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+  const lessons = await lessonsInOrder();
+  return lessons.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: { entry, prev: lessons[i - 1], next: lessons[i + 1] },
+  }));
 }
-const { entry } = Astro.props;
+const { entry, prev, next } = Astro.props;
 const { Content } = await render(entry);
-const base = import.meta.env.BASE_URL;
-const d = entry.data;
-const title = d.title ? `${d.id} ${d.title}` : `Exercise ${d.id.replace("exercise-", "")}`;
 ---
-<Base title={title}>
-  <p class="meta"><a href={`${base}/course/`}>← Course</a></p>
-  <h1>{title}</h1>
-  {d.minutes && <p class="meta">{d.minutes} min</p>}
+<Base title={label(entry)}>
+  <p class="meta"><a href={`${base}/course/`}>← All lessons</a></p>
+  <h1>{label(entry)}</h1>
+  {entry.data.minutes && <p class="meta">{entry.data.minutes} min</p>}
   <Content />
+  <nav class="pager" aria-label="Previous and next lesson">
+    {prev ? <a class="prev" href={href(prev.id)}>← {label(prev)}</a> : <span />}
+    {next ? <a class="next" href={href(next.id)}>{label(next)} →</a> : <span />}
+  </nav>
 </Base>
+<style>
+  .pager { display: flex; justify-content: space-between; gap: 16px; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+  .pager a { max-width: 48%; }
+  .next { text-align: right; margin-left: auto; }
+</style>
 <script>
   import { mountVisuals } from "../../lib/visuals";
   mountVisuals();

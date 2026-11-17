@@ -15,25 +15,25 @@ How hard is a circle or a box to spin, and what formula gives that number from i
 
 ## The idea
 
-Mass measures how hard a body is to _push_: the same force gives a smaller acceleration to a heavier body. The moment of inertia, `I`, is the rotational counterpart: it measures how hard a body is to _spin_. For a torque `τ` the angular acceleration is `α = τ / I`, the twin of `a = F / m`.
+Mass measures how hard a body is to _push_: the same force gives a smaller acceleration to a heavier body. The moment of inertia, `I`, is the rotational counterpart: it measures how hard a body is to _spin_. For a torque $\tau$ the angular acceleration is $\alpha = \tau / I$, the twin of $a = F/m$.
 
 Unlike mass, `I` depends on **where the mass is**, not only how much there is. Mass far from the centre counts for more. A figure skater spins slowly with arms out and quickly with arms in, with the same mass in both cases. Two discs of equal mass, one solid and one a thin ring, have different `I`: the ring is harder to spin because all its mass sits at the rim.
 
-Definition: split the body into tiny pieces of mass `dm`, and for each take its squared distance `r²` from the centre of mass (the rotation axis, sticking out of the screen):
+Definition: split the body into tiny pieces of mass $dm$, and for each take its squared distance $r^2$ from the centre of mass (the rotation axis, sticking out of the screen):
 
-```
-I = ∫ r² dm
-```
+$$
+I = \int r^2 \, dm
+$$
 
-Units: kg·m². In 2D this is a single number per body, because there is only one rotation axis. (In 3D it is a 3×3 matrix.) The body's mass is spread uniformly over its shape, which is the course's assumption. Position, remember, is the centre of mass, so `I` is always about the shape's own centre.
+Units: kg·m$^2$. In 2D this is a single number per body, because there is only one rotation axis. (In 3D it is a 3×3 matrix.) The body's mass is spread uniformly over its shape, which is the course's assumption. Position, remember, is the centre of mass, so `I` is always about the shape's own centre.
 
 The results we need:
 
 | Shape                                                       | Moment of inertia about its centre |
 | ----------------------------------------------------------- | ---------------------------------- |
-| Solid disc, mass `m`, radius `r`                            | `m r² / 2`                         |
-| Solid rectangle, mass `m`, width `w`, height `h`            | `m (w² + h²) / 12`                 |
-| The same rectangle with half-extents `hw = w/2`, `hh = h/2` | `m (hw² + hh²) / 3`                |
+| Solid disc, mass $m$, radius $r$                            | $\tfrac{1}{2} m r^2$              |
+| Solid rectangle, mass $m$, width $w$, height $h$            | $\tfrac{1}{12} m (w^2 + h^2)$     |
+| The same rectangle with half-extents $hw = w/2$, $hh = h/2$ | $\tfrac{1}{3} m (hw^2 + hh^2)$    |
 
 The starter code takes half-extents, because `Shape` stores `halfWidth` and `halfHeight`. That is why Exercise 1's `boxInertia(mass, halfWidth, halfHeight)` uses the third row.
 
@@ -43,55 +43,57 @@ None.
 
 ## The maths
 
-All three come from the same integral. Use a uniform density `σ` (mass per area), so `dm = σ dA` and `σ = m / area`.
+All three come from the same integral. Use a uniform density $\sigma$ (mass per area), so $dm = \sigma\, dA$ and $\sigma = m/\text{area}$.
 
-**Disc.** Use polar coordinates. The area element is `dA = ρ dρ dθ`, with distance `ρ` from the centre running over `[0, R]`, and angle `θ` over `[0, 2π]`:
+**Disc.** Use polar coordinates. The area element is $dA = \rho\, d\rho\, d\theta$, with distance $\rho$ from the centre running over $[0, R]$, and angle $\theta$ over $[0, 2\pi]$:
 
-```
-I = σ ∫₀^{2π} ∫₀^R ρ² · ρ dρ dθ
-  = σ · 2π · R⁴/4
-  = σ · π R⁴ / 2
-```
+$$
+\begin{aligned}
+I &= \sigma \int_0^{2\pi} \int_0^R \rho^2 \cdot \rho \, d\rho \, d\theta \\
+  &= \sigma \cdot 2\pi \cdot \frac{R^4}{4} \\
+  &= \sigma \cdot \frac{\pi R^4}{2}
+\end{aligned}
+$$
 
-With `σ = m / (π R²)`:
+With $\sigma = m / (\pi R^2)$:
 
-```
-I = m/(π R²) · π R⁴ / 2 = m R² / 2
-```
+$$
+I = \frac{m}{\pi R^2} \cdot \frac{\pi R^4}{2} = \frac{m R^2}{2}
+$$
 
-**Rectangle.** Put the origin at the centre. A point `(x, y)` has `r² = x² + y²`, and the integral splits into two:
+**Rectangle.** Put the origin at the centre. A point $(x, y)$ has $r^2 = x^2 + y^2$, and the integral splits into two:
 
-```
-I = σ ∫_{-h/2}^{h/2} ∫_{-w/2}^{w/2} (x² + y²) dx dy
-```
+$$
+I = \sigma \int_{-h/2}^{h/2} \int_{-w/2}^{w/2} (x^2 + y^2) \, dx \, dy
+$$
 
-For the `x²` term: `∫_{-w/2}^{w/2} x² dx = 2 · (w/2)³ / 3 = w³/12`, and the `y` integral just multiplies by `h`. That gives `w³ h / 12`. By symmetry the `y²` term gives `w h³ / 12`. With `σ = m / (w h)`:
+For the $x^2$ term: $\int_{-w/2}^{w/2} x^2 \, dx = 2 \cdot (w/2)^3 / 3 = w^3/12$, and the $y$ integral just multiplies by $h$. That gives $w^3 h / 12$. By symmetry the $y^2$ term gives $w h^3 / 12$. With $\sigma = m/(w h)$:
 
-```
-I = m/(w h) · (w³ h + w h³) / 12 = m (w² + h²) / 12
-```
+$$
+I = \frac{m}{w h} \cdot \frac{w^3 h + w h^3}{12} = \frac{m (w^2 + h^2)}{12}
+$$
 
-**Half-extents.** Substitute `w = 2 hw` and `h = 2 hh`:
+**Half-extents.** Substitute $w = 2\,hw$ and $h = 2\,hh$:
 
-```
-I = m (4 hw² + 4 hh²) / 12 = m (hw² + hh²) / 3
-```
+$$
+I = \frac{m (4\,hw^2 + 4\,hh^2)}{12} = \frac{m (hw^2 + hh^2)}{3}
+$$
 
 **Known answers, with the arithmetic** (these appear in the Exercise 1 tests):
 
-- Circle, `m = 2`, `r = 3`: `I = ½ · 2 · 3² = 9` kg·m².
-- Box, `m = 12`, `hw = 1`, `hh = 2`: `I = 12 · (1² + 2²) / 3 = 12 · 5 / 3 = 20` kg·m². Check through the full-width form: `w = 2`, `h = 4`, `I = 12 · (4 + 16) / 12 = 20`. Same.
+- Circle, $m = 2$, $r = 3$: $I = \tfrac12 \cdot 2 \cdot 3^2 = 9$ kg·m$^2$.
+- Box, $m = 12$, $hw = 1$, $hh = 2$: $I = 12 \cdot (1^2 + 2^2)/3 = 12 \cdot 5/3 = 20$ kg·m$^2$. Check through the full-width form: $w = 2$, $h = 4$, $I = 12 \cdot (4 + 16)/12 = 20$. Same.
 
-**Sanity checks.** Compare a disc of radius `r` with a square of half-extent `r` (so it just contains the disc) and the same mass `m`: the square has `I = m · 2r² / 3 ≈ 0.667 m r²`, against `0.5 m r²` for the disc. The square is larger, as it should be: its corners reach out to `√2 · r` from the centre. Another check: `I` must grow when you widen the box with the mass fixed, and the formula does.
+**Sanity checks.** Compare a disc of radius `r` with a square of half-extent `r` (so it just contains the disc) and the same mass `m`: the square has $I = m \cdot 2r^2/3 \approx 0.667\, m r^2$, against $0.5\, m r^2$ for the disc. The square is larger, as it should be: its corners reach out to $\sqrt{2}\, r$ from the centre. Another check: `I` must grow when you widen the box with the mass fixed, and the formula does.
 
 Finally, `invInertia = 1 / I` for a dynamic body, and `0` for a static one (pill 1.2).
 
 ## Common mistakes
 
-- **Using full widths in the half-extent formula.** `m (w² + h²) / 12` takes full width and height; `m (hw² + hh²) / 3` takes half-extents. Mixing them is off by a factor of 4. A box with `hw = 1` is 2 wide.
+- **Using full widths in the half-extent formula.** $m(w^2 + h^2)/12$ takes full width and height; $m(hw^2 + hh^2)/3$ takes half-extents. Mixing them is off by a factor of 4. A box with `hw = 1` is 2 wide.
 - **Using `m r²` for a disc.** That is the thin ring. A solid disc has the factor ½.
 - **Forgetting `I` is about the centre of mass.** An off-centre rotation axis needs the parallel axis theorem; this course always rotates about the centre.
-- **Confusing `I` with mass.** Doubling the size of a box at fixed density multiplies the mass by 4 and `I` by 16 in 2D, since `I ∝ m · length²`.
+- **Confusing `I` with mass.** Doubling the size of a box at fixed density multiplies the mass by 4 and $I$ by 16 in 2D, since $I \propto m \cdot \text{length}^2$.
 
 ## Checkpoint
 

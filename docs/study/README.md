@@ -14,3 +14,17 @@ For **Gio**, not for learners. Read a topic, then write the lesson in your own w
 Pick the next topic and say so; I write it the same way.
 
 Rules for these guides: short, scannable, every number carries its check (AGENTS.md rule 7), unverified claims are flagged, no copied passages.
+
+## Writing formulas
+
+Use `$...$` for a formula inside a sentence and `$$...$$` on its own lines for a displayed one. KaTeX renders them on the site, and GitHub renders the same syntax.
+
+```
+The energy is $E = \tfrac12 m v^2$. Displayed:
+
+$$
+I = \int r^2 \, dm
+$$
+```
+
+Keep code names (`invMass`, `angle`) in backticks. Full syntax: https://katex.org/docs/supported.html
