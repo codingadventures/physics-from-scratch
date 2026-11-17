@@ -43,6 +43,29 @@ const CSS = `
 
 const num = (n: number) => (Math.abs(n) >= 1e-3 || n === 0 ? n.toFixed(4) : n.toExponential(2));
 
+/** A game-over style banner: the scene dims, a red title sits in the centre, the reason below it. */
+function drawFailure(view: View, f: { title: string; detail: string }, pal: Palette): void {
+  const { ctx, canvas } = view;
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  const dark = pal.background !== "#fbfbf9";
+  ctx.save();
+  ctx.fillStyle = dark ? "rgba(0,0,0,0.62)" : "rgba(255,255,255,0.7)";
+  ctx.fillRect(0, 0, w, h);
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = dark ? "#ff6b6b" : "#c2262d";
+  const size = Math.max(20, Math.min(40, w / 15));
+  ctx.font = `800 ${size}px system-ui, sans-serif`;
+  ctx.fillText(f.title.toUpperCase(), w / 2, h / 2 - 8);
+  ctx.fillStyle = pal.ink;
+  ctx.font = "13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+  const max = Math.floor((w - 32) / 7.8);
+  const text = f.detail.length > max ? f.detail.slice(0, max - 1) + "…" : f.detail;
+  ctx.fillText(text, w / 2, h / 2 + size * 0.6);
+  ctx.restore();
+}
+
 function load(): string | null {
   try {
     return localStorage.getItem(STORAGE_KEY);
@@ -108,24 +131,32 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   // ---- state ----
   let oracle: Trace | null = null;
   let mine: BodyState[][] | null = null;
-  // The scene alone fits x from -5.5 to 4.6 and y from -1.3 to 5.5. Your result can widen it.
-  const sceneBounds = { minX: -6, maxX: 5, minY: -1.5, maxY: 5.8 };
-  let bounds = sceneBounds;
+  // The scene alone fits x from -5.5 to 4.6 and y from -1.3 to 5.5. The view starts there on every
+  // Play and zooms out as your box strays: the bounds at frame f cover everything up to frame f.
+  type Bounds = { minX: number; maxX: number; minY: number; maxY: number };
+  const sceneBounds: Bounds = { minX: -6, maxX: 5, minY: -1.5, maxY: 5.8 };
+  let cumBounds: Bounds[] | null = null;
   const fitTo = (frames: BodyState[][] | null) => {
-    bounds = { ...sceneBounds };
-    if (!frames) return;
+    if (!frames) {
+      cumBounds = null;
+      return;
+    }
     const LIMIT = 60; // ignore wild values (NaN, 1e9): they stay off screen rather than zoom to nothing
-    for (const f of frames) {
+    const b = { ...sceneBounds };
+    cumBounds = frames.map((f) => {
       for (const s of f) {
         const { x, y } = s.position;
         if (!Number.isFinite(x) || !Number.isFinite(y) || Math.abs(x) > LIMIT || Math.abs(y) > LIMIT) continue;
-        bounds.minX = Math.min(bounds.minX, x - 1);
-        bounds.maxX = Math.max(bounds.maxX, x + 1);
-        bounds.minY = Math.min(bounds.minY, y - 1);
-        bounds.maxY = Math.max(bounds.maxY, y + 1);
+        b.minX = Math.min(b.minX, x - 1);
+        b.maxX = Math.max(b.maxX, x + 1);
+        b.minY = Math.min(b.minY, y - 1);
+        b.maxY = Math.max(b.maxY, y + 1);
       }
-    }
+      return { ...b };
+    });
   };
+  // Shown over the canvas when your code does not compile or does not run.
+  let failure: { title: string; detail: string } | null = null;
   let frame = 0;
   let playing = false;
   let raf = 0;
@@ -183,6 +214,7 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   function draw(): void {
     const pal: Palette = palette();
     // Fit the view to the scene, and to your result too, so a box that flies off still shows.
+    const bounds = cumBounds ? cumBounds[Math.min(frame, cumBounds.length - 1)] : sceneBounds;
     const w = bounds.maxX - bounds.minX;
     const h = bounds.maxY - bounds.minY;
     view.pixelsPerMetre = Math.min(canvas.clientWidth / w, canvas.clientHeight / h);
@@ -228,6 +260,7 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
       });
       ctx.restore();
     }
+    if (failure) drawFailure(view, failure, pal);
     slider.value = String(frame);
     time.textContent = `${(frame * launchScene.dt).toFixed(2)} s`;
   }
@@ -265,16 +298,25 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     setPlaying(false);
     runBtn.disabled = true;
     setScore("", "Running…");
+    failure = null;
+    const fail = (title: string, detail: string) => {
+      runBtn.disabled = false;
+      mine = null;
+      fitTo(null);
+      frame = 0;
+      failure = { title, detail };
+      draw();
+      setScore("fail", title, `<code></code>`);
+      score.querySelector("code")!.textContent = detail;
+    };
+    // Type errors first (when the type help has loaded): the real project would not compile them.
+    const typeErrors = await editor.typeErrors();
+    if (typeErrors.length > 0) return fail("Compilation Failure", typeErrors[0]);
     const r = await runLearnerCode(editor.get(), launchScene);
     runBtn.disabled = false;
     if (!r.ok) {
-      mine = null;
-      fitTo(null);
-      draw();
-      const what = { syntax: "Syntax error", runtime: "Your code threw", timeout: "Timed out" }[r.kind];
-      setScore("fail", what, `<code></code>`);
-      score.querySelector("code")!.textContent = r.message;
-      return;
+      if (r.kind === "syntax") return fail("Compilation Failure", r.message);
+      return fail(r.kind === "timeout" ? "Timed Out" : "Runtime Error", r.message);
     }
     mine = r.frames;
     fitTo(mine);
@@ -331,6 +373,7 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     URL.revokeObjectURL(url);
   };
   playBtn.onclick = () => {
+    failure = null; // Play shows the target again
     if (!playing && frame >= steps) frame = 0;
     setPlaying(!playing);
   };

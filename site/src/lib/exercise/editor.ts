@@ -47,6 +47,8 @@ export type Editor = {
    * types and error squiggles. Resolves when it is ready; the editor works fine before that.
    */
   enableTypeScript(): Promise<void>;
+  /** Type errors in the current code, as "Line N: message". Empty if none, or if type help has not loaded yet. */
+  typeErrors(): Promise<string[]>;
 };
 
 const tsSupport = new Compartment();
@@ -77,10 +79,20 @@ export function createEditor(
       ],
     }),
   });
+  let checker: { worker: import("@valtown/codemirror-ts/worker").WorkerShape; path: string } | null = null;
   return {
     get: () => view.state.doc.toString(),
     set: (code) => view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: code } }),
     focus: () => view.focus(),
+    async typeErrors() {
+      if (!checker) return [];
+      const code = view.state.doc.toString();
+      await checker.worker.updateFile({ path: checker.path, code });
+      const lints = await checker.worker.getLints({ path: checker.path, diagnosticCodesToIgnore: [] });
+      return lints
+        .filter((l) => l.severity === "error")
+        .map((l) => `Line ${view.state.doc.lineAt(Math.min(l.from, view.state.doc.length)).number}: ${l.message}`);
+    },
     async enableTypeScript() {
       // Everything heavy is imported here, so it is downloaded only now, after the editor is up.
       const [comlink, { tsExtensions }, { EXERCISE_PATH }] = await Promise.all([
@@ -91,6 +103,7 @@ export function createEditor(
       const raw = new Worker(new URL("./ts.worker.ts", import.meta.url), { type: "module" });
       const worker = comlink.wrap<import("@valtown/codemirror-ts/worker").WorkerShape>(raw);
       await worker.initialize();
+      checker = { worker, path: EXERCISE_PATH };
       const { source, extensions } = tsExtensions(worker, EXERCISE_PATH);
       // Make sure the worker has the learner's text (not the stub) before the first request.
       await worker.updateFile({ path: EXERCISE_PATH, code: view.state.doc.toString() });
