@@ -47,6 +47,10 @@ Advance one body by `dt` seconds with semi-implicit Euler, changing it in place 
 - A static body (`invMass` 0) is not changed at all.
 - The angle is not wrapped into any range.
 
+**Try `integrate` here.** Press Play to see what Box2D does, then write your version and press Run. The tests in `starter/` remain the real check.
+
+<!-- visual: ex1-integrate -->
+
 Implement them in this order: the two inertia functions, then `createBody`, which calls them, then `integrate`.
 
 ## How to check

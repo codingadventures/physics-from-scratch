@@ -15,8 +15,10 @@ const STORAGE_KEY = "pfs:exercise:integrate:v1";
 type Options = { stub: string; filename: string };
 
 const CSS = `
-.pfs-ex { display: grid; gap: 16px; margin: 1rem 0; }
-@media (min-width: 900px) { .pfs-ex { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; } }
+.pfs-ex { margin: 1rem 0; container-type: inline-size; }
+/* Two columns only when the widget itself is wide (the try page), stacked in a lesson column. */
+.pfs-ex .pfs-grid { display: grid; gap: 16px; }
+@container (min-width: 900px) { .pfs-ex .pfs-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; } }
 .pfs-ex { --syn-keyword:#8a3ffc; --syn-string:#0f7b55; --syn-number:#b45309; --syn-comment:#7a786e; --syn-type:#1d6fa5; --syn-fn:#2563c9; }
 @media (prefers-color-scheme: dark) { .pfs-ex { --syn-keyword:#c4a2ff; --syn-string:#6fd3a8; --syn-number:#f0a35e; --syn-comment:#8c8a83; --syn-type:#7cc4f0; --syn-fn:#8bb4f7; } }
 .pfs-ex button { font: inherit; font-size: 14px; min-height: 36px; padding: 0 14px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); cursor: pointer; }
@@ -60,9 +62,20 @@ function drawFailure(view: View, f: { title: string; detail: string }, pal: Pale
   ctx.fillText(f.title.toUpperCase(), w / 2, h / 2 - 8);
   ctx.fillStyle = pal.ink;
   ctx.font = "13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
-  const max = Math.floor((w - 32) / 7.8);
-  const text = f.detail.length > max ? f.detail.slice(0, max - 1) + "…" : f.detail;
-  ctx.fillText(text, w / 2, h / 2 + size * 0.6);
+  // The reason is the real message, wrapped on spaces (at most 5 lines) rather than cut short.
+  const perLine = Math.max(16, Math.floor((w - 32) / 7.8));
+  const lines: string[] = [];
+  let cur = "";
+  for (const word of f.detail.split(/\s+/)) {
+    if (cur && cur.length + 1 + word.length > perLine) {
+      lines.push(cur);
+      cur = word;
+    } else cur = cur ? `${cur} ${word}` : word;
+  }
+  if (cur) lines.push(cur);
+  const shown = lines.slice(0, 5);
+  if (lines.length > 5) shown[4] = shown[4].slice(0, perLine - 1) + "…";
+  shown.forEach((line, i) => ctx.fillText(line, w / 2, h / 2 + size * 0.6 + i * 18));
   ctx.restore();
 }
 
@@ -126,7 +139,7 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   const score = el("div", { className: "score" });
   score.setAttribute("aria-live", "polite");
   const right = el("div", {}, canvas, el("div", { className: "controls" }, playBtn, slider, time), legend, score);
-  root.append(left, right);
+  root.append(el("div", { className: "pfs-grid" }, left, right));
 
   // ---- state ----
   let oracle: Trace | null = null;
