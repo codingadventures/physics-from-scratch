@@ -1,0 +1,24 @@
+---
+import Base from "../../layouts/Base.astro";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+<Base title="Try it: integrate">
+  <p class="meta"><a href={`${base}/course/`}>← All lessons</a> · prototype</p>
+  <h1>Exercise 1: integrate</h1>
+  <p>
+    Fill in <code>integrate</code> and press Run. Your box is solid; the faded one is Box2D given the same launch.
+    Keep going until they sit on top of each other.
+  </p>
+  <div id="exercise"></div>
+</Base>
+<style is:global>
+  header, main, footer { max-width: 1100px; }
+</style>
+<script>
+  import stub from "../../../../starter/src/dynamics/integrate.ts?raw";
+  import { mountExercise } from "../../lib/exercise/mount";
+  mountExercise(document.getElementById("exercise")!, { stub, filename: "integrate.ts" }).catch((e) => {
+    document.getElementById("exercise")!.textContent = "The editor failed to load.";
+    console.error(e);
+  });
+</script>
