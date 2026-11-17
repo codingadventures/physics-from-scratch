@@ -15,8 +15,10 @@ const STORAGE_KEY = "pfs:exercise:integrate:v1";
 type Options = { stub: string; filename: string };
 
 const CSS = `
-.pfs-ex { display: grid; gap: 16px; margin: 1rem 0; }
-@media (min-width: 900px) { .pfs-ex { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; } }
+.pfs-ex { margin: 1rem 0; container-type: inline-size; }
+/* Two columns only when the widget itself is wide (the try page), stacked in a lesson column. */
+.pfs-ex .pfs-grid { display: grid; gap: 16px; }
+@container (min-width: 900px) { .pfs-ex .pfs-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; } }
 .pfs-ex { --syn-keyword:#8a3ffc; --syn-string:#0f7b55; --syn-number:#b45309; --syn-comment:#7a786e; --syn-type:#1d6fa5; --syn-fn:#2563c9; }
 @media (prefers-color-scheme: dark) { .pfs-ex { --syn-keyword:#c4a2ff; --syn-string:#6fd3a8; --syn-number:#f0a35e; --syn-comment:#8c8a83; --syn-type:#7cc4f0; --syn-fn:#8bb4f7; } }
 .pfs-ex button { font: inherit; font-size: 14px; min-height: 36px; padding: 0 14px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); cursor: pointer; }
@@ -60,9 +62,20 @@ function drawFailure(view: View, f: { title: string; detail: string }, pal: Pale
   ctx.fillText(f.title.toUpperCase(), w / 2, h / 2 - 8);
   ctx.fillStyle = pal.ink;
   ctx.font = "13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
-  const max = Math.floor((w - 32) / 7.8);
-  const text = f.detail.length > max ? f.detail.slice(0, max - 1) + "…" : f.detail;
-  ctx.fillText(text, w / 2, h / 2 + size * 0.6);
+  // The reason is the real message, wrapped on spaces (at most 5 lines) rather than cut short.
+  const perLine = Math.max(16, Math.floor((w - 32) / 7.8));
+  const lines: string[] = [];
+  let cur = "";
+  for (const word of f.detail.split(/\s+/)) {
+    if (cur && cur.length + 1 + word.length > perLine) {
+      lines.push(cur);
+      cur = word;
+    } else cur = cur ? `${cur} ${word}` : word;
+  }
+  if (cur) lines.push(cur);
+  const shown = lines.slice(0, 5);
+  if (lines.length > 5) shown[4] = shown[4].slice(0, perLine - 1) + "…";
+  shown.forEach((line, i) => ctx.fillText(line, w / 2, h / 2 + size * 0.6 + i * 18));
   ctx.restore();
 }
 
@@ -126,7 +139,13 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   const score = el("div", { className: "score" });
   score.setAttribute("aria-live", "polite");
   const right = el("div", {}, canvas, el("div", { className: "controls" }, playBtn, slider, time), legend, score);
-  root.append(left, right);
+  root.append(el("div", { className: "pfs-grid" }, left, right));
+  // Until the Box2D reference and the editor have loaded, the buttons would do nothing. Say so
+  // instead of letting a click vanish.
+  runBtn.disabled = playBtn.disabled = true;
+  editorHost.textContent = "Loading the editor…";
+  editorHost.style.padding = "12px";
+  editorHost.style.color = "var(--muted)";
 
   // ---- state ----
   let oracle: Trace | null = null;
@@ -161,6 +180,8 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   let matched: boolean | null = null;
   // The same, per body: each body is green if its whole run matches Box2D, blue if not.
   let bodyOk: boolean[] = [];
+  // The code the last Run used, so Play can tell whether you have changed anything since.
+  let lastRunCode: string | null = null;
   let frame = 0;
   let playing = false;
   let raf = 0;
@@ -354,10 +375,27 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
 
   // ---- running ----
   async function run(): Promise<void> {
+    try {
+      await runInner();
+    } catch (e) {
+      // Never leave the Run button stuck: show whatever went wrong.
+      runBtn.disabled = false;
+      mine = null;
+      matched = null;
+      fitTo(null);
+      frame = 0;
+      failure = { title: "Runtime Error", detail: e instanceof Error ? `${e.name}: ${e.message}` : String(e) };
+      draw();
+      setScore("fail", "Runtime Error", "");
+    }
+  }
+
+  async function runInner(): Promise<void> {
     setPlaying(false);
     runBtn.disabled = true;
     setScore("", "Running…");
     failure = null;
+    lastRunCode = editor.get();
     const fail = (title: string, detail: string) => {
       runBtn.disabled = false;
       mine = null;
@@ -370,7 +408,7 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
       score.querySelector("code")!.textContent = detail;
     };
     // Type errors first (when the type help has loaded): the real project would not compile them.
-    const typeErrors = await editor.typeErrors();
+    const typeErrors = await editor.typeErrors().catch(() => [] as string[]); // type help is optional
     if (typeErrors.length > 0) return fail("Compilation Failure", typeErrors[0]);
     const r = await runLearnerCode(editor.get(), launchScene);
     runBtn.disabled = false;
@@ -403,6 +441,8 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   const showSaved = (ok: boolean) => {
     savedLabel.textContent = ok ? "Saved in this browser" : "Not saved (browser storage is blocked)";
   };
+  editorHost.textContent = "";
+  editorHost.removeAttribute("style");
   const editor = createEditor(editorHost, load() ?? opts.stub, {
     onChange: () => {
       savedLabel.textContent = "Editing…";
@@ -427,6 +467,17 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     editor.set(opts.stub);
     save(null);
     savedLabel.textContent = "Reset";
+    // Back to the target view: nothing of yours to show any more.
+    setPlaying(false);
+    mine = null;
+    matched = null;
+    bodyOk = [];
+    lastRunCode = null;
+    failure = null;
+    fitTo(null);
+    frame = 0;
+    draw();
+    setScore("", "Press Play to see the target", "This is Box2D with the launch your code has to reproduce. When you are ready, write integrate and press Run.");
   };
   downloadBtn.onclick = () => {
     const url = URL.createObjectURL(new Blob([editor.get()], { type: "text/plain" }));
@@ -435,6 +486,13 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     URL.revokeObjectURL(url);
   };
   playBtn.onclick = () => {
+    // Play runs your code when it has changed since the last Run (or that Run failed). Only the
+    // untouched stub plays the Box2D target on its own.
+    const code = editor.get();
+    if (!playing && code !== opts.stub && (code !== lastRunCode || mine === null)) {
+      void run();
+      return;
+    }
     failure = null; // Play shows the target again
     if (!playing && frame >= steps) frame = 0;
     setPlaying(!playing);
@@ -444,6 +502,7 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     frame = Number(slider.value);
     draw();
   };
+  runBtn.disabled = playBtn.disabled = false;
   new ResizeObserver(draw).observe(canvas);
   setScore("", "Press Play to see the target", "This is Box2D with the launch your code has to reproduce. When you are ready, write integrate and press Run.");
   draw();

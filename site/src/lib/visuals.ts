@@ -20,6 +20,14 @@ const visuals: Record<string, Mount> = {
     const { createProjectionVisual } = await import("../../../starter/src/visuals/vectorVisuals");
     createProjectionVisual(el);
   },
+  // The editable exercise, embedded in the exercise page (same widget as /try/integrate/).
+  "ex1-integrate": async (el) => {
+    const [{ mountExercise }, { default: stub }] = await Promise.all([
+      import("./exercise/mount"),
+      import("../../../starter/src/dynamics/integrate.ts?raw"),
+    ]);
+    await mountExercise(el, { stub, filename: "integrate.ts" });
+  },
   "v0-vector-add": async (el) => {
     const [{ recordTrace }, { createPlayer }, { makeDraggable }, { tracedVectorAdd }] =
       await Promise.all([

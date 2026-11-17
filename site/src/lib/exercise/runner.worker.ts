@@ -82,6 +82,6 @@ self.onmessage = (e: MessageEvent<RunRequest>) => {
     }
     reply({ ok: true, frames });
   } catch (err) {
-    reply({ ok: false, error: err instanceof Error ? err.message : String(err), step });
+    reply({ ok: false, error: err instanceof Error ? `${err.name}: ${err.message}` : String(err), step });
   }
 };
