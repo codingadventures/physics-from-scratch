@@ -51,6 +51,7 @@ export function createEditor(
       extensions: [
         basicSetup,
         javascript({ typescript: true }),
+        EditorView.lineWrapping,
         syntaxHighlighting(highlight),
         theme,
         keymap.of([
