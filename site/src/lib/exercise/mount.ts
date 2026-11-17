@@ -180,6 +180,8 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   let matched: boolean | null = null;
   // The same, per body: each body is green if its whole run matches Box2D, blue if not.
   let bodyOk: boolean[] = [];
+  // The code the last Run used, so Play can tell whether you have changed anything since.
+  let lastRunCode: string | null = null;
   let frame = 0;
   let playing = false;
   let raf = 0;
@@ -393,6 +395,7 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     runBtn.disabled = true;
     setScore("", "Running…");
     failure = null;
+    lastRunCode = editor.get();
     const fail = (title: string, detail: string) => {
       runBtn.disabled = false;
       mine = null;
@@ -464,6 +467,17 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     editor.set(opts.stub);
     save(null);
     savedLabel.textContent = "Reset";
+    // Back to the target view: nothing of yours to show any more.
+    setPlaying(false);
+    mine = null;
+    matched = null;
+    bodyOk = [];
+    lastRunCode = null;
+    failure = null;
+    fitTo(null);
+    frame = 0;
+    draw();
+    setScore("", "Press Play to see the target", "This is Box2D with the launch your code has to reproduce. When you are ready, write integrate and press Run.");
   };
   downloadBtn.onclick = () => {
     const url = URL.createObjectURL(new Blob([editor.get()], { type: "text/plain" }));
@@ -472,6 +486,13 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     URL.revokeObjectURL(url);
   };
   playBtn.onclick = () => {
+    // Play runs your code when it has changed since the last Run (or that Run failed). Only the
+    // untouched stub plays the Box2D target on its own.
+    const code = editor.get();
+    if (!playing && code !== opts.stub && (code !== lastRunCode || mine === null)) {
+      void run();
+      return;
+    }
     failure = null; // Play shows the target again
     if (!playing && frame >= steps) frame = 0;
     setPlaying(!playing);
