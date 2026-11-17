@@ -4,7 +4,7 @@ title: "Vector maths utilities and the debug draw API"
 module: "m0"
 minutes: 7
 prerequisites: ["0.2", "0.3"]
-visual: "none"
+visual: "v0-dot, v0-cross, v0-projection"
 readings_essential: []
 readings_deeper: []
 ---
@@ -62,21 +62,47 @@ The same primitives are what the step-through player draws, which pill 0.5 cover
 
 ## Visual
 
-None.
+Three small visuals sit in the maths section below: dot product, cross product and projection. Drag the tips of the two vectors; the real algorithm re-runs each time.
 
 ## The maths
 
-All of it is derived from the component form. Take a = (a.x, a.y) and b = (b.x, b.y), and write them in polar form: a = |a|(cos p, sin p) and b = |b|(cos q, sin q), where p and q are their angles from the x axis.
+All of it is derived from the component form. Take $a = (a_x, a_y)$ and $b = (b_x, b_y)$, and write them in polar form: $a = |a|(\cos p, \sin p)$ and $b = |b|(\cos q, \sin q)$, where $p$ and $q$ are their angles from the x axis.
 
-**Dot product.** Multiply componentwise and add: a.x*b.x + a.y*b.y = |a||b|(cos p cos q + sin p sin q) = |a||b| cos(q - p), by the cosine difference identity. So the dot product is the lengths times the cosine of the angle between the vectors. It is zero for perpendicular vectors.
+**Dot product.** Multiply componentwise and add:
 
-**Cross product.** The 2D cross product is a.x*b.y - a.y*b.x = |a||b|(cos p sin q - sin p cos q) = |a||b| sin(q - p), by the sine difference identity. It is the signed area of the parallelogram on a and b, positive when b is counter-clockwise from a. Consequences: cross(b, a) = -cross(a, b), and cross(a, a) = 0.
+$$
+a \cdot b = a_x b_x + a_y b_y = |a||b|(\cos p \cos q + \sin p \sin q) = |a||b| \cos(q - p)
+$$
 
-**Worked example.** a = (1, 2), b = (3, 4):
+by the cosine difference identity. So the dot product is the lengths times the cosine of the angle between the vectors. It is zero for perpendicular vectors. Drag the tips of $a$ and $b$ and watch it change:
 
-- a + b = (4, 6).
-- dot = 1*3 + 2*4 = 3 + 8 = 11.
-- cross = 1*4 - 2*3 = 4 - 6 = -2. Negative, because b is slightly clockwise from a.
+<!-- visual: v0-dot -->
+
+**Cross product.** The 2D cross product is
+
+$$
+a \times b = a_x b_y - a_y b_x = |a||b|(\cos p \sin q - \sin p \cos q) = |a||b| \sin(q - p)
+$$
+
+by the sine difference identity. It is the signed area of the parallelogram on $a$ and $b$, positive when $b$ is counter-clockwise from $a$. Consequences: $b \times a = -(a \times b)$, and $a \times a = 0$.
+
+<!-- visual: v0-cross -->
+
+**Projection.** The dot product also measures a shadow. Let $n = a/|a|$ be $a$ scaled to length 1. Since $a \cdot b = |a||b|\cos\theta$, the length of $b$'s shadow on the line of $a$ is
+
+$$
+\text{along} = b \cdot n = |b| \cos\theta
+$$
+
+The part of $b$ left over, at a right angle to $n$, has signed length $\text{across} = n \times b = |b| \sin\theta$ (the same sine identity as the cross product). Together they rebuild $b$: $\text{along}^2 + \text{across}^2 = |b|^2(\cos^2\theta + \sin^2\theta) = |b|^2$. Check with the visual's starting vectors $a = (3, 1)$, $b = (1, 2)$: $|a| = \sqrt{10}$, so $\text{along} = 5/\sqrt{10} \approx 1.581$, $\text{across} = (3 \cdot 2 - 1 \cdot 1)/\sqrt{10} \approx 1.581$, and $2.5 + 2.5 = 5 = |b|^2$. Later, collision tests project shapes onto an axis exactly like this.
+
+<!-- visual: v0-projection -->
+
+**Worked example.** $a = (1, 2)$, $b = (3, 4)$:
+
+- $a + b = (4, 6)$.
+- dot $= 1 \cdot 3 + 2 \cdot 4 = 3 + 8 = 11$.
+- cross $= 1 \cdot 4 - 2 \cdot 3 = 4 - 6 = -2$. Negative, because $b$ is slightly clockwise from $a$.
 
 **Perpendicular.** Rotating (x, y) by the angle t counter-clockwise gives (x cos t - y sin t, x sin t + y cos t). At t = 90 degrees, cos t = 0 and sin t = 1, so perp(a) = (-a.y, a.x). Then dot(a, perp(a)) = -a.x*a.y + a.y*a.x = 0, as it must for a quarter turn. It also connects the two products: dot(perp(a), b) = -a.y*b.x + a.x*b.y = cross(a, b).
 
