@@ -164,15 +164,21 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     const mover = launchScene.bodies.findIndex((b) => b.mass > 0);
 
     if (ghost) {
+      // With no result of yours yet, the reference is the star of the show: full strength and filled.
+      const target = mine === null;
       ctx.save();
-      ctx.globalAlpha = 0.4;
+      ctx.globalAlpha = target ? 1 : 0.4;
       ctx.strokeStyle = pal.b;
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = target ? 2 : 1.5;
       ctx.setLineDash([5, 4]);
       path(view, ghost, mover, ghost.length);
       ctx.setLineDash([]);
       ghost[Math.min(frame, ghost.length - 1)].forEach((s, i) => {
         bodyOutline(view, i, s);
+        if (target) {
+          ctx.fillStyle = launchScene.bodies[i].mass === 0 ? pal.grid : pal.b + "30";
+          ctx.fill();
+        }
         ctx.stroke();
       });
       ctx.restore();
@@ -198,14 +204,15 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
   }
 
   function setPlaying(on: boolean): void {
-    playing = on && mine !== null;
+    playing = on; // the Box2D reference plays even before you have run any code
     playBtn.textContent = playing ? "Pause" : "Play";
     cancelAnimationFrame(raf);
     if (!playing) return;
-    let last = performance.now();
+    let last: number | null = null;
     let acc = 0;
     const tick = (now: number) => {
-      acc += (now - last) / 1000;
+      // The first timestamp only sets the clock: rAF's `now` can be earlier than performance.now().
+      if (last !== null) acc += Math.max(0, now - last) / 1000;
       last = now;
       const advance = Math.floor(acc / launchScene.dt);
       acc -= advance * launchScene.dt;
@@ -285,7 +292,6 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     URL.revokeObjectURL(url);
   };
   playBtn.onclick = () => {
-    if (!mine) return;
     if (!playing && frame >= steps) frame = 0;
     setPlaying(!playing);
   };
@@ -295,6 +301,6 @@ export async function mountExercise(root: HTMLElement, opts: Options): Promise<v
     draw();
   };
   new ResizeObserver(draw).observe(canvas);
-  setScore("", "Press Run", "Your box is solid. The faded one is what Box2D does with the same launch.");
+  setScore("", "Press Play to see the target", "This is Box2D with the launch your code has to reproduce. When you are ready, write integrate and press Run.");
   draw();
 }
