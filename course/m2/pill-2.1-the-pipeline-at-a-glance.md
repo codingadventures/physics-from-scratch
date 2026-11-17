@@ -23,6 +23,8 @@ A physics step is a pipeline. Each stage takes the output of the one before and 
 4. **Narrowphase.** Test each candidate pair exactly. The result is a _manifold_ (a contact normal plus one or two contact points with depths) or nothing if the shapes do not really touch.
 5. **Solver.** Take the manifolds and change the bodies' velocities (and, a little, positions) so they stop moving into each other.
 
+![The five stages of one step in order: integrate, gather, broadphase, narrowphase, solver, then a dashed arrow back to integrate for the next step.](../diagrams/step-loop.excalidraw.svg)
+
 | Stage       | Reads                 | Produces                   | Work                                     |
 | ----------- | --------------------- | -------------------------- | ---------------------------------------- |
 | Integrate   | bodies, `dt`, gravity | the same bodies, moved     | one pass over n bodies                   |
