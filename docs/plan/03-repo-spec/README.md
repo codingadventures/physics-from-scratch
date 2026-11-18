@@ -74,6 +74,16 @@ it("A vs B mirrors B vs A", () => { /* ... */ });
 
 TypeScript in strict mode, Vite, Vitest, ESLint and Prettier. WP-01 picks current versions and records them. Versions are not pinned in this plan.
 
+## Testing strategy (D-048)
+
+Box2D is the yardstick, used by kind of behaviour, so learners write their own engine and are not cloning Box2D.
+
+| Kind | Examples | How it is checked |
+|---|---|---|
+| Physics fixes the answer | Vector maths, integration, moments of inertia, collision normal and depth | Function by function against Box2D (`starter/oracle/`, the M1 and M4 checks), plus known-answer tests with derivations |
+| Box2D's output is a design choice | Contact point selection, the solver, slop and position correction | A behaviour score on shared scenes: penetration, energy, settle time, rest position. Near-exact agreement is a diagnostic, never a requirement |
+| Box2D does not define it | Zero-length `normalize`, zero mass, invalid input | Hand-written unit tests, each with its derivation or reasoning in a comment |
+
 ## Known risks
 
 1. **Exercise dependencies:** later tests use earlier exercises (everything needs `Vec2`). A learner stuck on Exercise 0 is blocked everywhere. Mitigation: each exercise's tests may depend only on given code and earlier exercises, and the exercise page lists its prerequisites. There is no reference-solution switch (see 05-solutions-policy).
